@@ -6,7 +6,19 @@
   "brands": {
     "resource": "brands",
     "primaryKeyName": "id"
-  }
+  },
+  "product_categories": {
+    "resource": "product_categories",
+    "primaryKeyName": "id"
+  },
+  "manufacturers": {
+    "resource": "manufacturers",
+    "primaryKeyName": "id"
+  },
+  "product_groups": {
+    "resource": "product_groups",
+    "primaryKeyName": "id"
+  } 
 }
 
 
