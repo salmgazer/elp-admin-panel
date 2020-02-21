@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.scss';
 import {Button, message} from 'antd';
+import Sidebar from './components/sidebar.js';
 
 
 const info = () => {
@@ -10,7 +11,7 @@ const info = () => {
 function App() {
   return (
     <div className="App">
-      <Button type='primary' onClick={info}>Click me</Button>
+      <Sidebar />
     </div>
   );
 }
