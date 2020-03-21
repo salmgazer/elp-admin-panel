@@ -59,10 +59,19 @@ class Sidebar extends Component {
               <Menu.Item key="16" onClick={() => history.push(paths.importProducts)}>Import products</Menu.Item>
               <Menu.Item key="17" onClick={() => history.push(paths.assignProduct)}>Assign product storetype</Menu.Item>
             </SubMenu>
-              <Menu.Item key="67">
+              <SubMenu
+                  key="sub2"
+                  title={
+                      <span>
                   <Icon type="file" />
                   <span>Companies</span>
-              </Menu.Item>
+                </span>
+                  }
+              >
+                  <Menu.Item key="67" onClick={() => history.push(paths.businessCategories)}>Business Categories</Menu.Item>
+                  <Menu.Item key="68" onClick={() => history.push(paths.companies)}>Companies</Menu.Item>
+                  <Menu.Item key="69" onClick={() => history.push(paths.branches)}>Branches</Menu.Item>
+              </SubMenu>
             {/*<SubMenu
               key="sub2"
               title={

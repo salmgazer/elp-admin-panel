@@ -18,7 +18,23 @@
   "product_groups": {
     "resource": "product_groups",
     "primaryKeyName": "id"
-  } 
+  } ,
+  "branches": {
+    "resource": "branches",
+    "primaryKeyName": "id"
+  },
+  "companies": {
+    "resource": "companies",
+    "primaryKeyName": "id"
+  },
+  "business_categories": {
+    "resource": "business_categories",
+    "primaryKeyName": "id"
+  },
+  "users": {
+    "resource": "users",
+    "primaryKeyName": "id"
+  }
 }
 
 

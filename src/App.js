@@ -21,6 +21,9 @@ import Category from "./screens/classification/addcategory";
 import AddProducts from "./screens/classification/AddProducts";
 import Groups from "./screens/classification/addgroup";
 import Manufacturers from "./screens/classification/addmanufacturer";
+import Companies from "./screens/companies/companies";
+import Branches from "./screens/companies/branches";
+import BusinessCategories from "./screens/companies/businessCategories";
 
 
 
@@ -42,6 +45,9 @@ function App() {
           <Route path={paths.addCategory} exact component={Category} />
           <Route path={paths.addManufacturers} exact component={Manufacturers} />
         <Route path={paths.addProducts} exact component={AddProducts} />
+          <Route path={paths.companies} exact component={Companies} />
+          <Route path={paths.branches} exact component={Branches} />
+          <Route path={paths.businessCategories} exact component={BusinessCategories} />
       </Switch>
     </div>
   );

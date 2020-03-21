@@ -12,5 +12,9 @@ export default{
     addBrands : "/brands",
     addCategory : "/product_categories",
     addGroups : "/product_groups",
-    addManufacturers : "/manufacturers"
+    addManufacturers : "/manufacturers",
+    branches : "/branches",
+    companies : "/companies",
+    businessCategories : "/business_categories"
+
 };
