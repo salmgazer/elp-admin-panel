@@ -6,7 +6,7 @@ function Manufacturer() {
   return (
     <div>
       <Sidebar >
-          
+          <Table />
       </Sidebar>
     </div>
   );

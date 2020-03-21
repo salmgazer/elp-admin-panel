@@ -6,7 +6,7 @@ function Groups() {
   return (
     <div>
       <Sidebar >
-          
+          <Table />
       </Sidebar>
     </div>
   );

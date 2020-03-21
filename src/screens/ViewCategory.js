@@ -6,7 +6,7 @@ function Category() {
   return (
     <div>
       <Sidebar >
-          
+          <Table />
       </Sidebar>
     </div>
   );

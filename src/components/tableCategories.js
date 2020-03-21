@@ -55,7 +55,7 @@ class EditableTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-       tableName: 'brands',
+       tableName: 'product_categories',
        dataSource, editingKey: '' 
       };
     this.columns = [
