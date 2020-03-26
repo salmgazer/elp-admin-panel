@@ -1,6 +1,7 @@
 export default{
-    viewProducts: "/classification/products",
-    viewBrands: "/classification/brands",
+    login: "/login",
+    products: "/products",
+    brands: "/brands",
     viewCategories: "/classification/product_categories",
     viewGroups: "/classification/product_group",
     viewManufacturers: "/classification/manufacturers",
@@ -16,5 +17,4 @@ export default{
     branches : "/branches",
     companies : "/companies",
     businessCategories : "/business_categories"
-
 };

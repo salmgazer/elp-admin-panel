@@ -1,13 +1,12 @@
 import React from 'react';
-import {
-Switch,
-Route,
-} from "react-router-dom";
 import paths from "./utilities/paths";
 import './App.scss';
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { useAuth0 } from "./react-auth0-spa";
 
-
-import ViewProducts from './screens/classification/ViewProducts'
+import Products from './screens/products/list';
+import NavBar from './components/NavBar';
+/*
 import ViewBrands from './screens/classification/ViewBrands'
 import ViewCategory from './screens/classification/ViewCategory'
 import ViewGroups from './screens/classification/ViewGroups'
@@ -24,10 +23,76 @@ import Manufacturers from "./screens/classification/addmanufacturer";
 import Companies from "./screens/companies/companies";
 import Branches from "./screens/companies/branches";
 import BusinessCategories from "./screens/companies/businessCategories";
+ */
+import Loading from "./components/Loading";
+import Login from "./screens/Login";
+
+function NoMatch() {
+  return (
+    <div style={{backgroundColor: 'red'}}>
+      <button type="primary" onClick={() => (window.location.href = "/")}>
+        Back Home
+      </button>
+    </div>
+  );
+}
 
 
+const App = () => {
+  const { loading } = useAuth0();
 
+  if (loading) {
+    return <Loading />;
+  }
 
+  const setTitle = (title) => {
+    document.title = title;
+  };
+
+  const appName = require('../package.json').name;
+
+  // const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+  return (
+    <div className="App">
+      <NavBar/>
+      <div style={{marginLeft: '10px', marginRight: '10px'}}>
+        <Router>
+          <Switch>
+            <Route
+              exact
+              path={paths.login}
+              render={() => {
+                setTitle(`Login | ${appName}`);
+                return <Login />;
+              }}
+            />
+            <Route
+              exact
+              path={'/'}
+              render={() => {
+                setTitle(`Login | ${appName}`);
+                return <Login />;
+              }}
+            /><Route
+            exact
+            path={paths.products}
+            render={() => {
+              setTitle(`Products | ${appName}`);
+              return <Products />;
+            }}
+          />
+            <Route path="*">
+              <NoMatch />
+            </Route>
+          </Switch>
+        </Router>
+      </div>
+    </div>
+  );
+};
+
+/*
 function App() {
   return (
     <div className="App">
@@ -52,5 +117,7 @@ function App() {
     </div>
   );
 }
+
+*/
 
 export default App;

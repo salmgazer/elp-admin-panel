@@ -303,7 +303,7 @@ class EditableTable extends React.Component {
 
       } else {
 
-        
+
         newData.push(row);
         this.setState({ dataSource: newData, editingKey: '' });
 
@@ -318,9 +318,9 @@ class EditableTable extends React.Component {
       new Api(this.state.tableName).index().then((res) => {
       this.setState({dataSource : res.data.data });
     });
-  
+
   }
-  
+
   deleteBrand(index){
     new Api(this.state.tableName).delete(index).then((res) => {
       this.setState({dataSource : res.data.data });
@@ -359,22 +359,11 @@ class EditableTable extends React.Component {
     return (
        <div>
           <content style={{ textAlign: 'left' }}>
-            <Row gutter={8}>
+            <Row>
               <Col className="gutter-row" span={12}>
-                  <Title level={4}>View Products</Title>
+                  <Title level={2} style={{marginLeft: '20px'}}>All Products</Title>
               </Col>
-              <Col className="gutter-row" span={12}>
-                  <Button
-                      size="medium"
-                      htmlType="submit"
-                      className="login-form-button"
-                      type="primary"
-                      icon="save"
-                      onClick={() => history.push(paths.addProducts)}
-                  >
-                      Add Product
-                  </Button>
-                  {'   '}
+              <Col style={{float: 'right' }}>
                   <Button
                       size="medium"
                       htmlType="submit"
@@ -382,10 +371,10 @@ class EditableTable extends React.Component {
                       type="primary"
                       icon="save"
                       onClick={this.enterIconLoading}
+                      style={{marginRight: '10px'}}
                   >
                       Import Products
                   </Button>
-                  {'   '}
                   <Button
                       size="medium"
                       htmlType="submit"
@@ -393,6 +382,7 @@ class EditableTable extends React.Component {
                       type="primary"
                       icon="save"
                       onClick={this.enterIconLoading}
+                      style={{marginRight: '10px'}}
                   >
                       Export Products
                   </Button>
@@ -432,6 +422,15 @@ class EditableTable extends React.Component {
         />
       </EditableContext.Provider>
           </content>
+         <Button
+           htmlType="submit"
+           className="login-form-button"
+           shape='circle'
+           onClick={() => history.push(paths.addProducts)}
+           style={{backgroundColor: 'orange', color: 'white', width: '50px', height: '50px', fontSize: '30px', textAlign: 'center'}}
+         >
+           +
+         </Button>
        </div>
     );
   }
