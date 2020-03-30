@@ -11,10 +11,11 @@ export default{
     assignProduct: "/assign_product",
     addProducts : "/",
     addBrands : "/brands",
-    addCategory : "/product_categories",
+    productCategories : "/product_categories",
     addGroups : "/product_groups",
-    addManufacturers : "/manufacturers",
+    manufacturers : "/manufacturers",
     branches : "/branches",
     companies : "/companies",
-    businessCategories : "/business_categories"
+    businessCategories : "/business_categories",
+    accounts: "/accounts"
 };

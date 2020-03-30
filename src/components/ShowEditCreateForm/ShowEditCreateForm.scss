@@ -1,0 +1,17 @@
+#save-btn {
+  background-color: #DAAB59;
+  font-size: 18px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  height: 45px;
+  &:hover {
+    border-color: #86610C;
+    color: #86610C;
+    background-color: white;
+  }
+  &:active {
+    border-color: #86610C;
+    color: #86610C;
+    background-color: white;
+  }
+}

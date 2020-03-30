@@ -1,0 +1,27 @@
+.nav-item {
+  color: black;
+  &.ant-menu-item-selected {
+    color: white;
+    border-bottom-color: white;
+  }
+  &.ant-menu-item:hover {
+    color: white;
+    border-bottom-color: white;
+  }
+  &.ant-menu-submenu-open, .ant-menu-submenu-selected, .ant-menu-submenu-active, .ant-menu-submenu-title {
+
+    &:hover {
+      color: white;
+      border-bottom-color: white;
+    }
+  }
+}
+
+#navbar-area {
+  margin-bottom: 30px;
+  padding-top: 20px;
+  padding-bottom: 3px;
+  background-color: rgb(218, 171, 89);
+  box-shadow: 0 1px 2px 0 #daab59;
+  border-bottom-color: #daab59;
+}

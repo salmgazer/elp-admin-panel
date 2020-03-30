@@ -1,0 +1,47 @@
+[
+  {
+    "resource": "products",
+    "primaryKeyName": "id"
+  },
+  {
+    "resource": "brands",
+    "primaryKeyName": "id",
+    "isReady": true,
+    "isGeneric": true
+  },
+  {
+    "resource": "product_categories",
+    "primaryKeyName": "id"
+  },
+  {
+    "resource": "manufacturers",
+    "primaryKeyName": "id",
+    "isReady": true,
+    "isGeneric": true
+  },
+  {
+    "resource": "product_groups",
+    "primaryKeyName": "id"
+  } ,
+  {
+    "resource": "branches",
+    "primaryKeyName": "id"
+  },
+  {
+    "resource": "companies",
+    "primaryKeyName": "id"
+  },
+  {
+    "resource": "business_categories",
+    "primaryKeyName": "id"
+  },
+  {
+    "resource": "users",
+    "primaryKeyName": "userId",
+    "displayName": "Accounts",
+    "isReady": true,
+    "isGeneric": true
+  }
+]
+
+
