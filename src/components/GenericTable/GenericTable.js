@@ -5,7 +5,7 @@ import {
   EditOutlined,
   DeleteOutlined
 } from '@ant-design/icons';
-import './generictable.scss';
+import './GenericTable.scss';
 import ShowEditCreateForm from '../ShowEditCreateForm/ShowEditCreateForm';
 import actionTypes from '../../config/actionTypes';
 

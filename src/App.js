@@ -4,7 +4,7 @@ import './App.scss';
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { useAuth0 } from "./react-auth0-spa";
 import NavBar from './components/navbar/NavBar';
-import GenericTable from './components/generictable/GenericTable';
+import GenericTable from './components/GenericTable/GenericTable';
 import resources from './config/resources';
 import Loading from "./components/Loading";
 import Login from "./screens/login/Login";
