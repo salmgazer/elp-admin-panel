@@ -1,44 +1,91 @@
 [
   {
     "resource": "products",
+    "displayName": "Products",
     "primaryKeyName": "id"
   },
   {
     "resource": "brands",
+    "displayName": "Brands",
     "primaryKeyName": "id",
     "isReady": true,
     "isGeneric": true
   },
   {
     "resource": "product_categories",
+    "displayName": "Product Categories",
     "primaryKeyName": "id"
   },
   {
     "resource": "manufacturers",
+    "displayName": "Manufacturers",
     "primaryKeyName": "id",
     "isReady": true,
     "isGeneric": true
   },
   {
     "resource": "product_groups",
+    "displayName": "Product Groups",
     "primaryKeyName": "id"
   } ,
   {
     "resource": "branches",
+    "displayName": "Branches",
     "primaryKeyName": "id"
   },
   {
     "resource": "companies",
+    "displayName": "Companies",
     "primaryKeyName": "id"
   },
   {
-    "resource": "business_categories",
-    "primaryKeyName": "id"
+    "resource": "branches",
+    "primaryKeyName": "id",
+    "displayName": "Branches",
+    "useHashLink": true,
+    "isReady": true,
+    "isGeneric": true
+  },
+  {
+    "resource": "companies",
+    "primaryKeyName": "id",
+    "displayName": "Companies",
+    "displayColumns": ["name"],
+    "isReady": true,
+    "isGeneric": true,
+    "useHashLink": true,
+    "child": {
+      "resource": "branches",
+      "primaryKeyName": "id",
+      "isReady": true,
+      "isGeneric": true
+    }
   },
   {
     "resource": "users",
     "primaryKeyName": "userId",
     "displayName": "Accounts",
+    "displayColumns": ["firstName", "otherNames"],
+    "isReady": true,
+    "isGeneric": true,
+    "child": {
+      "resource": "companies",
+      "primaryKeyName": "id",
+      "displayName": "Company",
+      "isReady": true,
+      "isGeneric": true,
+      "child": {
+        "resource": "branches",
+        "primaryKeyName": "id",
+        "isReady": true,
+        "isGeneric": true
+      }
+    }
+  },
+  {
+    "resource": "business_categories",
+    "displayName": "Business Categories",
+    "primaryKeyName": "id",
     "isReady": true,
     "isGeneric": true
   }

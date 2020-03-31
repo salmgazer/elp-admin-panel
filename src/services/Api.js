@@ -15,10 +15,13 @@ const requestMethods = {
 class Api {
 
     constructor(resourceConfig, parentResources = {}, options = {}) {
-        const {resource, primaryKeyName} = resourceConfig;
+        const {resource, primaryKeyName, useHashLink} = resourceConfig;
         this.resource = resource;
         this.primaryKeyName = primaryKeyName;
         this.parentResources = parentResources;
+        if (useHashLink) {
+          this.useHashLink = useHashLink;
+        }
         if (options.limit) {
           this.limit = options.limit;
         }
@@ -53,8 +56,12 @@ class Api {
     }
 
     _generateUrl(identifierValue, customUrl) {
-      if (customUrl){
+      if (customUrl) {
         return customUrl;
+      }
+
+      if (this.useHashLink) {
+        return `${this.constructor.apiUrl}${window.location.hash.replace("#", '')}`;
       }
 
       let fullUrl = this.constructor.apiUrl;

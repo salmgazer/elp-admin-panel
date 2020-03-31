@@ -1,6 +1,6 @@
 import React from 'react';
 import Api from '../../services/Api.js'
-import {Table, Input, Popconfirm, Form, Button, Typography, Col, Row} from 'antd';
+import {Table, Input, Popconfirm, Form, Button, Typography, Col, Row, PageHeader} from 'antd';
 import {
   EditOutlined,
   DeleteOutlined
@@ -8,11 +8,12 @@ import {
 import './GenericTable.scss';
 import ShowEditCreateForm from '../ShowEditCreateForm/ShowEditCreateForm';
 import actionTypes from '../../config/actionTypes';
+import {withRouter} from 'react-router-dom';
 
 
 const {Title} = Typography;
 
-class EditableTable extends React.Component {
+class GenericTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +22,7 @@ class EditableTable extends React.Component {
       editRecord: false,
       recordToEdit: null,
       openCreateOrEditForm: false,
+      routes: []
     };
     this.showEditDrawer = this.showEditDrawer.bind(this);
     this.closeCreateOrEditDrawer = this.closeCreateOrEditDrawer.bind(this);
@@ -104,7 +106,27 @@ class EditableTable extends React.Component {
     });
   }
 
+
+  addPathToRoute(record) {
+    const {routes} = this.state;
+
+    if (record) {
+      const {resource} = this.props;
+      const updatedRoutes = routes;
+      updatedRoutes.push({
+        path: resource.resource,
+        breadcrumbName: `${resource.displayName}: ${resource.displayColumns.map(displayCol => record[displayCol]).join(" ")}`
+      });
+      this.setState({
+        routes: updatedRoutes
+      });
+    }
+  }
+
   componentDidMount() {
+    const {recordToEdit} = this.state;
+
+    this.addPathToRoute(recordToEdit)
     this.fetchAndsetDataSource();
   }
 
@@ -133,9 +155,13 @@ class EditableTable extends React.Component {
   }
 
   render() {
-    const {columns, resource} = this.props;
+    const {columns, resource, history} = this.props;
     const resourceName = resource.resource;
-    const resourceDisplayName = resource.displayName || resource.resource;
+    const resourceDisplayName = resource.displayName || resourceName;
+
+    console.log("!!!!!!!!!!!!!!!!");
+    console.log(resourceName);
+    console.log("!!!!!!!!!!!!!!!!");
 
     let updatedColumns = Object.assign([], columns);
     const mainColumn = updatedColumns.find(column => column.mainColumn === true);
@@ -143,10 +169,18 @@ class EditableTable extends React.Component {
       <b
         style={{ cursor: 'pointer'}}
         onClick={() => {
-        this.setState({
-          formAction: actionTypes.show
-        });
-        this.showEditDrawer(record);
+        if (!resource.child) {
+          this.setState({
+            formAction: actionTypes.show
+          });
+          this.showEditDrawer(record);
+        } else {
+          // add next path to routes
+          this.addPathToRoute(record);
+          history.push(`${resourceName}/${record[resource.primaryKeyName]}/${resource.child.resource}`);
+
+          // render to next path
+        }
       }}>{text}</b>;
 
     updatedColumns.push({
@@ -195,12 +229,28 @@ class EditableTable extends React.Component {
           replaceRow={this.replaceRow}
         />
         <Row>
-          <Col className="gutter-row" span={12}>
-            <Title className='table-title' level={2} style={{marginLeft: '20px', textAlign: 'left'}}>
+          <Col className="gutter-row" span={6}>
+            <Title
+              className='table-title'
+              level={2}
+              style={{
+                marginLeft: '20px',
+                textAlign: 'left',
+                fontWeight: '600'
+              }}>
               All {resourceDisplayName}
             </Title>
           </Col>
-          <Col style={{float: 'right' }}>
+          <Col span={10}>
+            {
+              this.state.routes.length > 0 ?
+                <PageHeader
+                  onBack={() => null}
+                  breadcrumb={{ routes: this.state.routes }}
+                /> : ''
+            }
+          </Col>
+          <Col style={{float: 'right' }} span={8}>
             <Button
               htmlType="submit"
               className="login-form-button btn-appearance"
@@ -209,7 +259,7 @@ class EditableTable extends React.Component {
               onClick={this.enterIconLoading}
               style={{marginRight: '10px'}}
             >
-              Import {resourceName}
+              Import {resourceDisplayName}
             </Button>
             <Button
               htmlType="submit"
@@ -219,7 +269,7 @@ class EditableTable extends React.Component {
               onClick={this.enterIconLoading}
               style={{marginRight: '10px', }}
             >
-              Export {resourceName}
+              Export {resourceDisplayName}
             </Button>
           </Col>
         </Row>
@@ -271,6 +321,4 @@ class EditableTable extends React.Component {
   }
 }
 
-const EditableFormTable = Form.create()(EditableTable);
-
-export default EditableFormTable;
+export default Form.create()(withRouter(GenericTable));

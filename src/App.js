@@ -66,12 +66,12 @@ const App = () => {
             {
               resources.filter(r => r.isGeneric === true && r.isReady === true).map(resource => {
                 const resourceName = resource.resource;
+                console.log(resource);
                 return <Route
                   key={resourceName}
-                  exact
                   path={paths[resourceName]}
                   render={() => {
-                    setTitle(`${resourceName} | ${appName}`);
+                    setTitle(`${ resource.displayName || resourceName} | ${appName}`);
                     return <GenericTable resource={resource} columns={allColumns[resourceName]} />;
                   }}
                 />
