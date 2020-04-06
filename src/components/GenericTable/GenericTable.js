@@ -306,7 +306,10 @@ class GenericTable extends React.Component {
     if (parentColumn && this.state.dataSource) {
       parentColumn.render = (text, record) => {
         if (record.parentId) {
+          console.log(record.parentId);
           const parentRecord = this.state.dataSource.find(item => item[resource.primaryKeyName] === record.parentId);
+          console.log(parentRecord);
+          console.log("=================");
           return <Col
             onClick={() => {
               this.routeOrShowRender(resource, parentRecord);

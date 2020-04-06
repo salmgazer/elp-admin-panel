@@ -126,6 +126,10 @@ function ShowEditCreateForm(props) {
     };
 
     const renderChildren = () => {
+      console.log(records);
+      if (!record) {
+        return '';
+      }
       const children = records.filter(r => r.parentId === record[resource.primaryKeyName]);
 
       if (children.length < 1) {
