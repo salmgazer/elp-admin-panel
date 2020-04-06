@@ -39,6 +39,9 @@ export const Auth0Provider = ({
         const user = await auth0FromHook.getUser();
         const token = await auth0FromHook.getIdTokenClaims();
         LocalInfo.userToken = token.__raw;
+        LocalInfo.userNickname = user.nickname;
+        LocalInfo.userPicture = user.picture;
+        LocalInfo.userEmail = user.email;
         setUser(user);
       }
 

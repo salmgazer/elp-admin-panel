@@ -41,6 +41,7 @@ const columns = [
     key: 'gender',
     dataType: {
       type: inputTypes.multi,
+      values: ['male', 'female']
     }
   },
 ];

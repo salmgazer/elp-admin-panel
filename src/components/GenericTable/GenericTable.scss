@@ -9,22 +9,26 @@
 }
 
 .btn-appearance {
-  background-color: #31913E;
-  border-color: #31913E;
-  font-weight: bold;
+  background-color: #007462;
+  border-color: #007462;
+  font-weight: normal;
   &:hover {
-    color: #31913E;
+    color: #007462;
     background-color: white;
-    border-color: #31913E;
+    font-weight: normal;
+    border-color: #007462;
   }
 }
 
 .table-title {
   color: #AE735D !important;
+  text-align: left;
+  margin-left: 50px;
 }
 
 .table-hr {
   color: #9F7747;
+  margin-top: -25px;
 }
 
 .search-bar-area {

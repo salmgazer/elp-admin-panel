@@ -1,4 +1,4 @@
-import { Menu } from 'antd';
+import { Menu, Avatar } from 'antd';
 import {
   UsergroupAddOutlined,
   LogoutOutlined,
@@ -11,6 +11,7 @@ import paths from "../../utilities/paths";
 import { withRouter } from 'react-router-dom';
 import './navbar.scss';
 import resources from '../../config/resources';
+import LocalInfo from "../../services/LocalInfo";
 
 
 
@@ -28,6 +29,10 @@ const NavBar = (props) => {
   const routeTo = (path) => {
     history.push(path);
   };
+
+  if (!isAuthenticated && window.location.hash !== '#/') {
+    logout();
+  }
 
   /*
   const currentPathElements = window.location.hash.replace("#",'').split('/');
@@ -59,7 +64,7 @@ const NavBar = (props) => {
       >
         <Menu.Item key="brands" className='nav-sub-item' onClick={() => routeTo(paths.brands)}>Brands</Menu.Item>
         <Menu.Item key="manufacturers" className='nav-sub-item' onClick={() => routeTo(paths.manufacturers)}>Manufacturers</Menu.Item>
-        <Menu.Item key="product_categories" className='nav-sub-item' onClick={() => routeTo(paths.productCategories)}>Product Categories</Menu.Item>
+        <Menu.Item key="product_categories" className='nav-sub-item' onClick={() => routeTo(paths.product_categories)}>Product Categories</Menu.Item>
         <Menu.Item key="product_segments" className='nav-sub-item' onClick={() => routeTo(paths)}>Product Segments</Menu.Item>
       </SubMenu>
       <SubMenu
@@ -70,13 +75,13 @@ const NavBar = (props) => {
           </span>
         }
       >
-        <Menu.Item key="business_category" className='nav-sub-item' onClick={() => routeTo(paths.businessCategories)}>Business Categories</Menu.Item>
+        <Menu.Item key="business_category" className='nav-sub-item' onClick={() => routeTo(paths.business_categories)}>Business Categories</Menu.Item>
       </SubMenu>
       <SubMenu
         className='nav-item'
         title={
           <span className="submenu-title-wrapper" style={{fontSize: '30px'}}>
-            <UserOutlined/>
+            <Avatar size={"large"} src={LocalInfo.userPicture} />
           </span>
         }
       >

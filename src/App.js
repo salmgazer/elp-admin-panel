@@ -39,7 +39,6 @@ const App = () => {
 
   const appName = require('../package.json').name;
 
-
   return (
     <div className="App">
       <div>
@@ -63,10 +62,11 @@ const App = () => {
                 return <Login />;
               }}
             />
+
             {
               resources.filter(r => r.isGeneric === true && r.isReady === true).map(resource => {
                 const resourceName = resource.resource;
-                console.log(resource);
+                console.log(resourceName);
                 return <Route
                   key={resourceName}
                   path={paths[resourceName]}

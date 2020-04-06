@@ -15,3 +15,22 @@
     background-color: white;
   }
 }
+
+.ant-drawer-title {
+  color:  #86610C;
+  font-size: 20px;
+  text-align: center;
+}
+
+.ant-drawer-header {
+  box-shadow: 0 0.5px 1px 0 grey;
+}
+
+.ant-drawer-close {
+  .anticon.anticon-close {
+    svg {
+      color: #62738d;
+      font-weight: bold;
+    }
+  }
+}

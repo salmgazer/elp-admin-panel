@@ -4,6 +4,8 @@ import users from './users';
 import business_categories from './businessCategories';
 import companies from './companies';
 import branches from './branches';
+import product_categories from './productCategories';
+import products from './products';
 
 
 
@@ -13,7 +15,9 @@ const allColumns = {
   users,
   business_categories,
   companies,
-  branches
+  branches,
+  product_categories,
+  products
 };
 
 

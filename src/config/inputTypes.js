@@ -2,5 +2,6 @@ module.exports = {
   string: 'string',
   number: 'number',
   multi: 'multi',
-  boolean: 'boolean'
+  boolean: 'boolean',
+  date: 'date'
 };

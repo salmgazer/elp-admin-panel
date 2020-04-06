@@ -31,17 +31,23 @@ class Api {
         if (options.url) {
           this.url = options.url;
         }
+
+        if (options.contentType) {
+          this.contentType = options.contentType;
+        }
+        this.searchConfig = options.searchConfig;
     }
 
     static get apiUrl() {
         return apiUrl || fakeApiUrl;
     }
 
-    _makeRequest(method, params, identifierValue, contentType) {
+    _makeRequest(method, params, identifierValue) {
       const headers = {'Authorization': `Bearer ${LocalInfo.userToken}`};
-      if (contentType) {
-        headers['Content-Type'] = contentType;
+      if (this.contentType) {
+        headers['accept'] = this.contentType;
       }
+      console.log(headers);
       const requestConfig = {
         method,
         url: this._generateUrl(identifierValue),
@@ -77,6 +83,8 @@ class Api {
         fullUrl = `${fullUrl}/${identifierValue}`;
       }
 
+      fullUrl = `${fullUrl}/?`;
+
       if (this.offset) {
         fullUrl = `${fullUrl}offset=${this.offset}`;
       }
@@ -84,6 +92,17 @@ class Api {
       if (this.limit) {
         fullUrl = `${fullUrl}offset=${this.offset}`;
       }
+
+      if (this.searchConfig) {
+        const searchConfigKeys = Object.keys(this.searchConfig);
+        for (let m = 0; m < searchConfigKeys.length; m++) {
+          fullUrl = `${fullUrl}${searchConfigKeys[m]}=${this.searchConfig[searchConfigKeys[m]]}`;
+          if (m < searchConfigKeys.length - 1) {
+            fullUrl = `${fullUrl}&`;
+          }
+        }
+      }
+
       return fullUrl;
     }
 
