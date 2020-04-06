@@ -19,6 +19,17 @@ const columns = [
       type: inputTypes.string,
     }
   },
+  {
+    title: 'Business Category',
+    dataIndex: 'businessCategoryId',
+    isForeignEntity: true,
+    resourceKey: 'businessCategory',
+    required: false,
+    mainColumn: true,
+    dataType: {
+      type: inputTypes.multi,
+    }
+  },
 ];
 
 export default columns;
