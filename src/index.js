@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from "react-redux";
 import './assets/css/index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Auth0Provider } from "./react-auth0-spa";
 import history from "./utilities/history";
 import config from "./auth_config.json";
+import store from "./state/store";
 
 const onRedirectCallback = appState => {
   history.push(
@@ -22,7 +24,9 @@ ReactDOM.render(
     redirect_uri={window.location.origin}
     onRedirectCallback={onRedirectCallback}
   >
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </Auth0Provider>,
   document.getElementById("root")
 );

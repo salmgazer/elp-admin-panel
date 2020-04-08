@@ -47,7 +47,6 @@ class Api {
       if (this.contentType) {
         headers['accept'] = this.contentType;
       }
-      console.log(headers);
       const requestConfig = {
         method,
         url: this._generateUrl(identifierValue),
@@ -83,7 +82,7 @@ class Api {
         fullUrl = `${fullUrl}/${identifierValue}`;
       }
 
-      fullUrl = `${fullUrl}/?`;
+      fullUrl = `${fullUrl}?`;
 
       if (this.offset) {
         fullUrl = `${fullUrl}offset=${this.offset}`;

@@ -15,6 +15,10 @@ const columns = [
     dataIndex: 'name',
     required: true,
     mainColumn: true,
+    defaultSortOrder: 'descend',
+    isTableColumn: true,
+    isCardColumn: true,
+    sortDirections: ['descend', 'ascend'],
     dataType: {
       type: inputTypes.string,
     }

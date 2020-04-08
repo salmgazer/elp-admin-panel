@@ -13,7 +13,7 @@ const Login = (props) => {
   const {history} = props;
   const { isAuthenticated, loginWithRedirect } = useAuth0();
 
-  if(isAuthenticated) history.push(paths.brands);
+  if(isAuthenticated) history.push(paths.users);
   return (
     <Fragment>
       {!isAuthenticated && (

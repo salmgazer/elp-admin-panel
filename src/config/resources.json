@@ -6,6 +6,8 @@
     "mainColumnName": "name",
     "isReady": true,
     "isGeneric": true,
+    "canEdit": true,
+    "canDelete": true,
     "showCreatedAt": true,
     "showUpdatedAt": true
   },
@@ -16,6 +18,8 @@
     "mainColumnName": "name",
     "isReady": true,
     "isGeneric": true,
+    "canEdit": true,
+    "canDelete": true,
     "showCreatedAt": true,
     "showUpdatedAt": true
   },
@@ -24,17 +28,11 @@
     "displayName": "Product Groups",
     "primaryKeyName": "id",
     "mainColumnName": "name",
+    "canEdit": true,
+    "canDelete": true,
     "showCreatedAt": true,
     "showUpdatedAt": true
   } ,
-  {
-    "resource": "companies",
-    "displayName": "Companies",
-    "primaryKeyName": "id",
-    "mainColumnName": "name",
-    "showCreatedAt": true,
-    "showUpdatedAt": true
-  },
   {
     "resource": "branches",
     "primaryKeyName": "id",
@@ -43,6 +41,7 @@
     "useHashLink": true,
     "isReady": true,
     "isGeneric": true,
+    "canEdit": true,
     "showCreatedAt": true,
     "showUpdatedAt": true
   },
@@ -54,6 +53,7 @@
     "mainColumnName": "name",
     "isReady": true,
     "isGeneric": true,
+    "canEdit": true,
     "useHashLink": true,
     "showCreatedAt": true,
     "showUpdatedAt": true,
@@ -62,6 +62,7 @@
       "primaryKeyName": "id",
       "isReady": true,
       "isGeneric": true,
+      "canEdit": true,
       "showCreatedAt": true,
       "showUpdatedAt": true
     }
@@ -74,6 +75,7 @@
     "mainColumnName": "firstName",
     "isReady": true,
     "isGeneric": true,
+    "canEdit": true,
     "showCreatedAt": true,
     "showUpdatedAt": true,
     "child": {
@@ -83,6 +85,7 @@
       "mainColumnName": "name",
       "isReady": true,
       "isGeneric": true,
+      "canEdit": true,
       "showCreatedAt": true,
       "showUpdatedAt": true,
       "child": {
@@ -90,6 +93,7 @@
         "primaryKeyName": "id",
         "isReady": true,
         "isGeneric": true,
+        "canEdit": true,
         "showCreatedAt": true,
         "showUpdatedAt": true
       }
@@ -102,6 +106,8 @@
     "mainColumnName": "name",
     "isReady": true,
     "isGeneric": true,
+    "canEdit": true,
+    "canDelete": true,
     "showCreatedAt": true,
     "showUpdatedAt": true
   },
@@ -112,6 +118,7 @@
     "mainColumnName": "name",
     "isReady": true,
     "isGeneric": true,
+    "canEdit": true,
     "showCreatedAt": true,
     "showUpdatedAt": true
   },
@@ -125,6 +132,8 @@
     "isGeneric": true,
     "parentName": "Parent",
     "parentType": "string",
+    "canEdit": true,
+    "canDelete": true,
     "showCreatedAt": true,
     "showUpdatedAt": true
   }

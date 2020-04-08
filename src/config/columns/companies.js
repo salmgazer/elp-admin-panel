@@ -15,6 +15,7 @@ const columns = [
     dataIndex: 'name',
     required: true,
     mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.string,
     }
@@ -24,8 +25,9 @@ const columns = [
     dataIndex: 'businessCategoryId',
     isForeignEntity: true,
     resourceKey: 'businessCategory',
+    resource: 'business_categories',
     required: false,
-    mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.multi,
     }

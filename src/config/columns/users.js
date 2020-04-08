@@ -6,6 +6,7 @@ const columns = [
     dataIndex: 'firstName',
     key: 'firstName',
     mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.string,
     }
@@ -14,7 +15,7 @@ const columns = [
     title: 'Other Names',
     dataIndex: 'otherNames',
     key: 'otherNames',
-    mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.string,
     }
@@ -23,6 +24,7 @@ const columns = [
     title: 'Phone',
     dataIndex: 'phone',
     key: 'phone',
+    isTableColumn: true,
     dataType: {
       type: inputTypes.string,
     }
@@ -31,6 +33,7 @@ const columns = [
     title: 'Username',
     dataIndex: 'username',
     key: 'username',
+    isTableColumn: true,
     dataType: {
       type: inputTypes.string,
     }

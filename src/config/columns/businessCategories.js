@@ -15,6 +15,7 @@ const columns = [
     dataIndex: 'name',
     required: true,
     mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.string,
     }

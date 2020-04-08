@@ -15,6 +15,7 @@ const columns = [
     dataIndex: 'name',
     required: true,
     mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.string,
     }
@@ -23,6 +24,7 @@ const columns = [
     title: 'Parent',
     dataIndex: 'parentId',
     required: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.multi,
     }

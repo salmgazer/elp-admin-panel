@@ -1,23 +1,27 @@
 import './ShowEditCreateForm.scss';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Drawer, Form, Button, Col, Row, Input, Select, Card, Tag} from 'antd';
 import capitalize from 'capitalize';
-import Api from '../../services/Api';
 import inputTypes from '../../config/inputTypes';
 import actionTypes from '../../config/actionTypes';
+import resources from '../../config/resources';
+import { connect } from 'react-redux';
+import actions from "../../state/actions";
+
 
 const { Option } = Select;
 
+const isMobile = window.innerWidth < 1000;
 
-function ShowEditCreateForm(props) {
-  const {editRecord, record, onClose, resource, columns, action, addNewRow, replaceRow, parentRecordId, records} = props;
+const ShowEditCreateForm = (props)  => {
+  const {editRecord, record, onClose, dispatch, resource, columns, action, parentRecordId, records} = props;
   const {getFieldDecorator} = props.form;
   const resourceName = resource.resource;
   const resourceDisplayName = resource.displayName || resourceName;
   const finalColumns = action === actionTypes.create ? columns.filter(col => col.dataIndex !== resource.primaryKeyName) : columns;
 
   const stringInput = (column) => {
-    return <Col span={12}>
+    return <Col span={isMobile ? 24 : 12}>
       <Form.Item
         name={column.dataIndex}
         label={column.title}
@@ -33,36 +37,72 @@ function ShowEditCreateForm(props) {
     </Col>
   };
 
+  useEffect(() => {
+    if (['edit', 'create'].includes(action)) {
+      for (const column of columns.filter(col => col.isForeignEntity)) {
+        const colResource = resources.find(r => r.resource === column.resource);
+        if (props[colResource.resource].length === 0) {
+          fetchIndexFromStore(colResource);
+        }
+      }
+    }
+  });
+
+  const fetchIndexFromStore = (resourceConfig) => {
+    dispatch(actions.index(resourceConfig));
+  };
+
+
   /**
    * @param column
    * @param values
    * @param type can be array of strings or array of objects(resources)
    * @returns {*}
    */
-  const selectInput = (column, values, type) => {
-    return <Col span={12}>
-      <Form.Item
-        name={column.dataIndex}
-        label={column.title}
-        rules={[{ required: true, message: `Please select ${column.title}` }]}
-      >
-        {getFieldDecorator(column.dataIndex, {
-          initialValue: record ? record[column.dataIndex] : null,
-          rules: [{ required: true, message: `Please enter ${column.title} of ${resourceDisplayName}` }],
-        })(
-          <Select placeholder={`Please select ${column.title}`}>
-            {
-              (column.dataType.values || values).map(value =>
-                <Option
-                  value={typeof value === 'string' ? value : value.id}>
-                  { typeof value === 'string' ? capitalize(value) : capitalize(value.name)}
-                </Option>)
-            }
-          </Select>
-        )}
-      </Form.Item>
-    </Col>
+  const selectInput = (column, entries, type) => {
+    let values = entries;
+
+    if (column.isForeignEntity) {
+      const relatedResource = resources.find(r => r.resource === column.resource);
+      values = props[relatedResource.resource] || [];
+      return selectInputComponent(column, values);
+    }
+
+    return selectInputComponent(column, values);
   };
+
+  const selectInputComponent = (column, values) => <Col span={isMobile ? 12 : 24}>
+    <Form.Item
+      name={column.dataIndex}
+      label={column.title}
+      rules={[{ required: true, message: `Please select ${column.title}` }]}
+    >
+      {getFieldDecorator(column.dataIndex, {
+        initialValue: record ? record[column.dataIndex] : null,
+        rules: [{ required: true, message: `Please enter ${column.title} of ${resourceDisplayName}` }],
+      })(
+        <Select
+          style={{ width: 350 }}
+          showSearch
+          placeholder={`Please select ${column.title}`}
+          onSearch={(val) => console.log(val)}
+          optionFilterProp="children"
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          {
+            (column.dataType.values || values).map(value =>
+              <Option
+                key={typeof value === 'string' ? value : value.id}
+                value={typeof value === 'string' ? value : value.id}>
+                { typeof value === 'string' ? capitalize(value) : capitalize(value.name)}
+              </Option>)
+          }
+        </Select>
+      )}
+    </Form.Item>
+  </Col>;
 
     const pickCorrectInput = (column) => {
       switch (column.dataType.type) {
@@ -70,7 +110,7 @@ function ShowEditCreateForm(props) {
           return stringInput(column);
         }
         case inputTypes.multi: {
-          return selectInput(column, records);
+          return selectInput(column, props[resourceName]);
         }
         default: {
           return stringInput(column)
@@ -81,12 +121,20 @@ function ShowEditCreateForm(props) {
     const renderInputs = (columns) => {
       const allInputRows = [];
       for (let m = 0; m < columns.length; m += 2) {
-        const inputsRow =
-          <Row gutter={16} key={m}>
+        const inputsRows = isMobile ? [
+          <Row gutter={24} key={m}>
+            {columns[m] ? pickCorrectInput(columns[m]) : ''}
+          </Row>,
+          <Row>
+            {columns[m+1] ? pickCorrectInput(columns[m+1]) : ''}
+          </Row>
+        ] :
+          [<Row gutter={16} key={m}>
             {columns[m] ? pickCorrectInput(columns[m]) : ''}
             {columns[m+1] ? pickCorrectInput(columns[m+1]) : ''}
-          </Row>;
-        allInputRows.push(inputsRow);
+          </Row>];
+        inputsRows.forEach(inputRow => allInputRows.push(inputRow));
+        // allInputRows.push(inputsRow);
       }
       return allInputRows;
     };
@@ -95,12 +143,12 @@ function ShowEditCreateForm(props) {
       const showFieldsRows = [];
       for (let m = 0; m < columns.length; m++) {
         const showRow = record === null ? null :
-          <div>
+          <div key={columns[m].dataIndex}>
             {columns[m] ?
               <Card size={"small"} style={{marginBottom: '5px'}}>
                 <Row>
-                  <Col span={8} style={{fontSize: '18px', color: '#00834E', fontWeight: 400}}>{columns[m].title}</Col>
-                  <Col span={16} style={{textAlign: 'left', fontSize: '18px'}}>{
+                  <Col span={isMobile ? 24 : 8} style={{fontSize: '18px', color: '#00834E', fontWeight: 400}}>{columns[m].title}</Col>
+                  <Col span={isMobile ? 24 : 8} style={{textAlign: 'left', fontSize: '18px'}}>{
                     columns[m].dataIndex === 'parentId' && record[columns[m].dataIndex] ?
                       <div
                         style={{
@@ -126,7 +174,6 @@ function ShowEditCreateForm(props) {
     };
 
     const renderChildren = () => {
-      console.log(records);
       if (!record) {
         return '';
       }
@@ -174,29 +221,13 @@ function ShowEditCreateForm(props) {
       <div>
         <Drawer
           title={`${capitalize(action || '')} ${resourceDisplayName}`}
-          width={720}
+          width={ isMobile ? 400 : 720}
           onClose={onClose}
           visible={editRecord}
-          bodyStyle={{ paddingBottom: 80 }}
-          footer={
-            <div
-              style={{
-                textAlign: 'right',
-              }}
-            >
-              <Button
-                onClick={onClose}
-                style={{ marginRight: 8 }}
-              >
-                Cancel
-              </Button>
-              <Button onClick={onClose} type="primary">
-                Submit
-              </Button>
-            </div>
-          }
+          bodyStyle={{ paddingBottom: 80}}
+          style={{overflow: 'scroll'}}
         >
-          <Form layout="vertical" hideRequiredMark>
+          <Form layout="vertical" style={{ overflow: 'auto' }} hideRequiredMark>
             {
               action === actionTypes.show ? renderShowFields(finalColumns) : renderInputs(finalColumns).map(inputsRow => inputsRow)
             }
@@ -212,12 +243,11 @@ function ShowEditCreateForm(props) {
                       removeNulls(updatedRowObject);
                       if (action === actionTypes.edit) {
                         const identifierValue = updatedRowObject[resource.primaryKeyName];
-                        const updatedRow = await new Api(resource).update(identifierValue, updatedRowObject);
-                        replaceRow(identifierValue, updatedRow.data);
+                        dispatch(actions.updateOne(identifierValue, updatedRowObject, resource));
                       } else if (action === actionTypes.create) {
-                        const newRow = await new Api(resource).create(updatedRowObject);
-                        addNewRow(newRow.data);
+                        dispatch(actions.createOne(updatedRowObject, resource));
                       }
+                      props.form.resetFields();
                       onClose();
                     }}>
                       {action === actionTypes.create ? 'Create' : 'Save'}
@@ -230,6 +260,34 @@ function ShowEditCreateForm(props) {
         </Drawer>
       </div>
     );
+};
+
+
+function mapStateToProps(state) {
+  const {
+    brands,
+    companies,
+    branches,
+    products,
+    manufacturers,
+    product_categories,
+    business_categories,
+    users,
+    clients
+  } = state;
+
+  return {
+    brands,
+    companies,
+    branches,
+    products,
+    manufacturers,
+    product_categories,
+    business_categories,
+    users,
+    clients,
+
+  };
 }
 
-export default Form.create()(ShowEditCreateForm);
+export default Form.create()(connect(mapStateToProps)(ShowEditCreateForm));

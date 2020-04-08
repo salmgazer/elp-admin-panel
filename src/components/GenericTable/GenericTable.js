@@ -13,20 +13,25 @@ import {
   Tag,
   Divider,
   message,
-  notification
+  notification,
+  Card,
+  Avatar,
+  List
 } from 'antd';
-import {
-  EditOutlined,
-  DeleteOutlined
-} from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import './GenericTable.scss';
 import ShowEditCreateForm from '../ShowEditCreateForm/ShowEditCreateForm';
 import actionTypes from '../../config/actionTypes';
 import {withRouter} from 'react-router-dom';
 import inputTypes from "../../config/inputTypes";
 import XLSX from 'xlsx';
+import { connect } from 'react-redux';
+import actions from '../../state/actions';
+import paths from "../../utilities/paths";
 
 const {Title} = Typography;
+
+const isMobile = window.innerWidth < 1000;
 
 class GenericTable extends React.Component {
   constructor(props) {
@@ -36,19 +41,19 @@ class GenericTable extends React.Component {
 
     this.showEditDrawer = this.showEditDrawer.bind(this);
     this.closeCreateOrEditDrawer = this.closeCreateOrEditDrawer.bind(this);
-    this.addNewRow = this.addNewRow.bind(this);
-    this.replaceRow = this.replaceRow.bind(this);
-    this.fetchAndsetDataSource = this.fetchAndsetDataSource.bind(this);
+    this.downloadCSV = this.downloadCSV.bind(this);
     this.routeOrShowRender = this.routeOrShowRender.bind(this);
     this.handleFileChosen = this.handleFileChosen.bind(this);
+    this.fetchIndexFromStore = this.fetchIndexFromStore.bind(this);
   }
 
-  showEditDrawer = (record) => {
+  showEditDrawer = (record, formAction) => {
     this.setState({
       openCreateOrEditForm: true,
       recordToEdit: record,
       parentRecordId: record && record.parentId ?
-        this.state.dataSource.find(item => item[this.props.resource.primaryKeyName] === record.parentId).id : null
+        this.props[this.props.resource.resource]
+          .find(item => item[this.props.resource.primaryKeyName] === record.parentId).id : null
     });
   };
 
@@ -57,28 +62,6 @@ class GenericTable extends React.Component {
       openCreateOrEditForm: false,
       recordToEdit: null,
       parentRecordId: null,
-    });
-  };
-
-  addNewRow = (row) => {
-    const newDatasource = [row].concat(this.state.dataSource);
-    this.setState({
-      dataSource: newDatasource
-    });
-  };
-
-  replaceRow = (id, newRow) => {
-    let newDatasource = this.state.dataSource.filter(row => row[this.props.resource.primaryKeyName] !== id);
-    newDatasource = [newRow].concat(newDatasource);
-    this.setState({
-      dataSource: newDatasource
-    });
-  };
-
-  removeRow = (itemId) => {
-    const {resource} = this.props;
-    this.setState({
-      dataSource: this.state.dataSource.filter(row => row[resource.primaryKeyName] !== itemId)
     });
   };
 
@@ -116,7 +99,7 @@ class GenericTable extends React.Component {
     });
   }
 
-  fetchAndsetDataSource(contentType) {
+  downloadCSV() {
     const {searchValue} = this.state;
     const options = {};
     if (searchValue && searchValue.length > 0) {
@@ -125,24 +108,17 @@ class GenericTable extends React.Component {
       }
     }
 
-    if (contentType) {
-      options.contentType = contentType;
-    }
-    new Api(this.props.resource, {}, options).index().then((res) => {
-      if (!contentType) {
-        this.setState({dataSource: res.data[this.state.tableName]});
-      } else {
-        const element = document.createElement('a');
-        // <a href="data:application/octet-stream,field1%2Cfield2%0Afoo%2Cbar%0Agoo%2Cgai%0A">CSV Octet</a>
-        element.setAttribute('href',
-          `data:text/csv;charset=utf-8,${encodeURI(res.data)}`);
-        console.log(res.data);
-        element.setAttribute('download', `${this.props.resource.resource}-${new Date().toString().split('GMT')[0]}`);
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        element.remove();
-      }
+    new Api(this.props.resource, {}, {'Content-Type': 'text/csv'})
+        .index().then((res) => {
+      const element = document.createElement('a');
+      element.setAttribute('href',
+        `data:text/csv;charset=utf-8,${encodeURI(res.data)}`);
+      element.setAttribute('download', `${this.props.resource.resource}-${new Date()
+        .toString().split('GMT')[0]}`);
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      element.remove();
     });
   }
 
@@ -165,42 +141,45 @@ class GenericTable extends React.Component {
   get initialState() {
     return {
       tableName: this.props.resource.resource,
-      dataSource: [],
       editRecord: false,
       recordToEdit: null,
       parentRecordId: null,
       openCreateOrEditForm: false,
       searchValue: '',
+      formAction: '',
       routes: []
     }
   }
 
   componentDidMount() {
-    const {recordToEdit} = this.state;
-
-    this.addPathToRoute(recordToEdit)
-    this.fetchAndsetDataSource();
+    this.fetchIndexFromStore();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.tableName !== this.props.resource.resource) {
-      this.setState(this.initialState);
-      this.fetchAndsetDataSource();
+      this.fetchIndexFromStore();
     }
   }
 
-  async deleteItem(itemId){
-    const deleted = await new Api(this.props.resource).delete(itemId);
-    if (deleted.status === 200) {
-      this.removeRow(itemId);
+  fetchIndexFromStore() {
+    const { dispatch, resource } = this.props;
+    const {searchValue} = this.state;
+    const options = {};
+
+    if (searchValue && searchValue.length > 0) {
+      options.searchConfig = {
+        search: searchValue
+      }
     }
+
+    dispatch(actions.index(resource, {}, options));
   }
 
   edit(key) {
     this.setState({ editingKey: key });
   }
 
-   routeOrShowRender(resource, record) {
+  routeOrShowRender(resource, record) {
      const {history} = this.props;
      if (!resource.child) {
        this.setState({
@@ -215,7 +194,7 @@ class GenericTable extends React.Component {
    }
 
   async handleFileChosen(e) {
-    const {columns, resource} = this.props;
+    const {columns, resource, dispatch} = this.props;
     const file = e.target.files[0];
     if (!file) {
       return message.warning("Import was canceled");
@@ -238,7 +217,6 @@ class GenericTable extends React.Component {
         for (const column of columns.filter(col => col.dataIndex !== resource.primaryKeyName)) {
           const header = headers.find(h => h === column.dataIndex);
           if (!header) {
-            console.log(column);
             return notification.error({
               message: 'File is invalid',
               description:
@@ -247,21 +225,17 @@ class GenericTable extends React.Component {
           }
         }
 
-        const updatedDataSource = this.state.dataSource;
-
         const allFailedRows = [];
         for (const row of rows) {
+          row.name = `${row.name}`;
           const newBrand = await new Api(resource).create(row);
-          if (newBrand && newBrand.data) {
-            updatedDataSource.push(newBrand.data);
-          } else {
+          dispatch(actions.createOne(newBrand, resource, {}));
+          if (!newBrand) {
             allFailedRows.push(row);
           }
         }
 
-        this.setState({
-          dataSource: updatedDataSource
-        });
+        this.fetchIndexFromStore();
 
         notification.success({
           message: 'Done!',
@@ -294,22 +268,18 @@ class GenericTable extends React.Component {
   };
 
   render() {
-    const {columns, resource, history} = this.props;
+    const {columns, resource, dispatch} = this.props;
     const resourceName = resource.resource;
     const resourceDisplayName = resource.displayName || resourceName;
-
-
     let updatedColumns = Object.assign([], columns);
     const mainColumn = updatedColumns.find(column => column.mainColumn === true);
     const parentColumn =  updatedColumns.find(column => column.dataIndex === 'parentId');
 
-    if (parentColumn && this.state.dataSource) {
+    if (parentColumn && this.props[resourceName]) {
       parentColumn.render = (text, record) => {
         if (record.parentId) {
-          console.log(record.parentId);
-          const parentRecord = this.state.dataSource.find(item => item[resource.primaryKeyName] === record.parentId);
-          console.log(parentRecord);
-          console.log("=================");
+          const parentRecord = this.props[resourceName].find(item => item[resource.primaryKeyName] === record.parentId);
+
           return <Col
             onClick={() => {
               this.routeOrShowRender(resource, parentRecord);
@@ -335,7 +305,7 @@ class GenericTable extends React.Component {
       updatedColumn.render = (text, record) =>
         <b style={{ cursor: 'pointer', fontWeight: 'normal'}}>
           {
-            record[updatedColumn.dataIndex] === null ? ''
+            !record[updatedColumn.resourceKey] ? ''
               :
             <Tag
               style={{
@@ -345,7 +315,7 @@ class GenericTable extends React.Component {
                 paddingBottom: '3px',
                 paddingTop: '3px',
               }}>
-              {record[updatedColumn.resourceKey].name}
+              { record ? record[updatedColumn.resourceKey].name : ''}
             </Tag>
           }
         </b>
@@ -362,8 +332,9 @@ class GenericTable extends React.Component {
       updatedColumns.push({
         title: 'Created At',
         dataIndex: 'created_at',
+        isTableColumn: true,
         required: true,
-        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1000).toString().split('GMT')[0]}</i>,
+        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1000).toDateString().split('GMT')[0]}</i>,
         dataType: {
           type: inputTypes.date,
         }});
@@ -373,8 +344,9 @@ class GenericTable extends React.Component {
       updatedColumns.push({
         title: 'Updated At',
         dataIndex: 'updated_at',
+        isTableColumn: true,
         required: true,
-        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1000).toString().split('GMT')[0]}</i>,
+        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1000).toDateString().split('GMT')[0]}</i>,
         dataType: {
           type: inputTypes.date,
         }});
@@ -390,46 +362,114 @@ class GenericTable extends React.Component {
       dataIndex: '',
       key: 'action',
       width: '150px',
+      isTableColumn: (resource.canEdit || resource.canDelete),
       render: (text, record) => {
         const { editingKey } = this.state;
         return (
           <Row gutter={2}>
-            <Col span={12}>
-              <Button
-                shape={"circle"}
-                style={{
-                  backgroundColor: '#FFF8E8',
-                  borderColor: '#FFF8E8',
-                  boxShadow: '0 2px 4px 0 grey'
-                }}
-                onClick={async () => {
-                  const freshRecord = await new Api(resource).findOne(record[resource.primaryKeyName]);
-                  this.setState({
-                    formAction: actionTypes.edit
-                  });
-                  this.showEditDrawer(freshRecord.data)
-                }}
-              >
-                <EditOutlined disabled={editingKey !== ''} style={{color: '#2F4858'}}/>
-              </Button>
-            </Col>
-            <Col span={12}>
-              <Popconfirm title={`Are you sure you want to delete ${record[resource.mainColumnName]}?`} onConfirm={() => this.deleteItem(record[resource.primaryKeyName])}>
+            {resource.canEdit ?
+              <Col span={12}>
                 <Button
                   shape={"circle"}
                   style={{
-                    borderColor: '#FFC1B4',
-                    backgroundColor: '#FFC1B4',
+                    backgroundColor: '#FFF8E8',
+                    borderColor: '#FFF8E8',
                     boxShadow: '0 2px 4px 0 grey'
-                  }}>
-                  <DeleteOutlined style={{color: '#2F4858'}}/>
+                  }}
+
+                  onClick={async () => {
+                    this.setState({
+                      formAction: actionTypes.edit
+                    });
+
+                    this.showEditDrawer(record);
+                  }}
+                >
+                  <EditOutlined disabled={editingKey !== ''} style={{color: '#2F4858'}}/>
                 </Button>
-              </Popconfirm>
-            </Col>
+              </Col> : ''
+            }
+            {resource.canDelete ?
+              <Col span={12}>
+                <Popconfirm
+                  title={`Are you sure you want to delete ${record[resource.mainColumnName]}?`}
+                  onConfirm={() => dispatch(actions.deleteOne(record[resource.primaryKeyName], resource))}
+                >
+                  <Button
+                    shape={"circle"}
+                    style={{
+                      borderColor: '#FFC1B4',
+                      backgroundColor: '#FFC1B4',
+                      boxShadow: '0 2px 4px 0 grey'
+                    }}>
+                    <DeleteOutlined style={{color: '#2F4858'}}/>
+                  </Button>
+                </Popconfirm>
+              </Col> : ''
+            }
           </Row>
         );
       }
     });
+
+    const mobileCardActions = (item) => {
+      const result = [<Button
+        shape={"circle"}
+        style={{
+          backgroundColor: '#C3FCF2',
+          borderColor: '#C3FCF2',
+          boxShadow: '0 2px 4px 0 grey'
+        }}
+
+        onClick={async () => {
+          this.setState({
+            formAction: actionTypes.show
+          });
+
+          this.showEditDrawer(item);
+        }}
+      >
+        <EyeOutlined style={{color: '#2F4858'}}/>
+      </Button>];
+      if (resource.canEdit) {
+        result.push(<Button
+          shape={"circle"}
+          style={{
+            backgroundColor: '#FFF8E8',
+            borderColor: '#FFF8E8',
+            boxShadow: '0 2px 4px 0 grey',
+            display: resource.canEdit ? 'visible' : 'hidden'
+          }}
+
+          onClick={async () => {
+            this.setState({
+              formAction: actionTypes.edit
+            });
+
+            this.showEditDrawer(item);
+          }}
+        >
+          <EditOutlined style={{color: '#2F4858'}}/>
+        </Button>);
+      }
+      if (resource.canDelete) {
+        result.push(<Popconfirm
+          title={`Are you sure?`}
+          onConfirm={() => dispatch(actions.deleteOne(item[resource.primaryKeyName], resource))}
+        >
+          <Button
+            shape={"circle"}
+            style={{
+              borderColor: '#FFC1B4',
+              backgroundColor: '#FFC1B4',
+              boxShadow: '0 2px 4px 0 grey'
+            }}>
+            <DeleteOutlined style={{color: '#2F4858'}}/>
+          </Button>
+        </Popconfirm>);
+      }
+      return result;
+    };
 
     return (
       <div>
@@ -439,15 +479,15 @@ class GenericTable extends React.Component {
           columns={columns}
           resource={resource}
           record={this.state.recordToEdit}
-          records={this.state.dataSource}
+          records={this.props[resourceName]}
           parentRecordId={this.state.parentRecordId}
           action={this.state.formAction}
           addNewRow={this.addNewRow}
           replaceRow={this.replaceRow}
         />
-        <Row>
+        <Row className="title-row">
           <Col className="gutter-row" span={9}>
-            <Title className='table-title' level={2}>
+            <Title className={isMobile ? 'table-title-mobile' : 'table-title'}>
               All {resourceDisplayName}
             </Title>
           </Col>
@@ -460,7 +500,7 @@ class GenericTable extends React.Component {
                 /> : ''
             }
           </Col>
-          <Col style={{ textAlign: 'right', float: 'right', marginRight: '40px' }} span={6}>
+          <Col style={{ textAlign: 'right', float: 'right', marginRight: isMobile ? '10px' : '20px' }} span={isMobile ? 8 : 6}>
             <input
               accept=".xls,.xlsx"
               id="file-import-button"
@@ -470,23 +510,23 @@ class GenericTable extends React.Component {
             />
             <Button
               htmlType="submit"
-              className="btn-appearance"
+              className="btn-appearance export-import-btn"
               type="primary"
               icon="upload"
               onClick={async () => await triggerFileImportButton()}
-              style={{marginRight: '10px', }}
+              style={{marginRight: isMobile ? '20px' : '10px' }}
             >
-              Import
+              { !isMobile ? 'Import' : '' }
             </Button>
             <Button
               htmlType="submit"
-              className="btn-appearance"
+              className="btn-appearance export-import-btn"
               type="primary"
               icon="download"
-              onClick={async () => await this.fetchAndsetDataSource('text/csv')}
+              onClick={async () => await this.downloadCSV('text/csv')}
               style={{marginRight: '10px', }}
             >
-              Export
+              { !isMobile ? 'Export' : '' }
             </Button>
           </Col>
         </Row>
@@ -499,7 +539,7 @@ class GenericTable extends React.Component {
         >
           <Row gutter={8}>
           <Form className="login-form">
-            <Col className="gutter-row" span={6}>
+            <Col className="gutter-row" span={ isMobile? 24 : 6}>
               <div className="gutter-box search-bar-area">
                 <Input.Search
                   size="large"
@@ -509,44 +549,72 @@ class GenericTable extends React.Component {
                       searchValue: e.target.value
                     });
                   }}
-                  onSearch={ async value => {
-                    await this.fetchAndsetDataSource();
+                  onSearch={ value => {
+                    this.fetchIndexFromStore();
                   }}
 
-                  onPressEnter={ async e => {
-                    await this.fetchAndsetDataSource();
+                  onPressEnter={ e => {
+                    this.fetchIndexFromStore();
                   }}
 
-                  onPaste={async e => {
-                    await this.fetchAndsetDataSource();
+                  onPaste={ e => {
+                    this.fetchIndexFromStore();
                   }}
                 />
               </div>
             </Col>
           </Form>
         </Row>
-          <Table
-            dataSource={this.state.dataSource}
-            columns={updatedColumns.filter(col => col.dataIndex !== resource.primaryKeyName)}
-            rowClassName="editable-row"
-            rowKey={resource.primaryKeyName}
-            pagination={{
-              position: "bottom",
-              size: '4'
-            }}
-            onRow={(record, rowIndex) => {
-              return {
-                onClick: event => {}, // click row
-                onDoubleClick: event => {
-                  this.routeOrShowRender(resource, record);
-                }, // double click row
-                onContextMenu: event => {}, // right button click row
-                onMouseEnter: event => {}, // mouse enter row
-                onMouseLeave: event => {}, // mouse leave row
-              };
-            }}
-            size={"small"}
-          />
+          {
+            isMobile ?
+              <List
+                itemLayout="vertical"
+                size="large"
+                pagination={{
+                  pageSize: 5,
+                }}
+                dataSource={this.props[resourceName]}
+                renderItem={item => (
+                  <List.Item
+                    key={item[resource.primaryKeyName]}
+                  >
+                    <Card
+                      className={'card-item'}
+                      actions={mobileCardActions(item)}
+                    >
+                      <Row onClick={() => this.routeOrShowRender(resource, item)}>
+                        <Col span={8} style={{textAlign: 'left', color: '#AE735D', fontSize: '16px'}}>{mainColumn.title}</Col>
+                        <Col span={16} style={{textAlign: 'right', fontSize: '16px'}}>{item[mainColumn.dataIndex]}</Col>
+                      </Row>
+                    </Card>
+                  </List.Item>
+                )}
+              />
+              :
+              <Table
+                dataSource={this.props[resourceName]}
+                columns={updatedColumns.filter(col => col.isTableColumn)}
+                rowClassName="editable-row"
+                rowKey={resource.primaryKeyName}
+                pagination={{
+                  position: "bottom",
+                  hideOnSinglePage: true,
+                  size: 10
+                }}
+                onRow={(record, rowIndex) => {
+                  return {
+                    onClick: event => {}, // click row
+                    onDoubleClick: event => {
+                      this.routeOrShowRender(resource, record);
+                    }, // double click row
+                    onContextMenu: event => {}, // right button click row
+                    onMouseEnter: event => {}, // mouse enter row
+                    onMouseLeave: event => {}, // mouse leave row
+                  };
+                }}
+                size={"small"}
+              />
+          }
         </div>
         <Button
           htmlType="submit"
@@ -568,4 +636,31 @@ class GenericTable extends React.Component {
   }
 }
 
-export default Form.create()(withRouter(GenericTable));
+function mapStateToProps(state) {
+  const {
+    brands,
+    companies,
+    branches,
+    products,
+    manufacturers,
+    product_categories,
+    business_categories,
+    users,
+    clients
+  } = state;
+
+  return {
+    brands,
+    companies,
+    branches,
+    products,
+    manufacturers,
+    product_categories,
+    business_categories,
+    users,
+    clients,
+
+  };
+}
+
+export default Form.create()(withRouter(connect(mapStateToProps)(GenericTable)));

@@ -1,16 +1,11 @@
 import { Menu, Avatar } from 'antd';
-import {
-  UsergroupAddOutlined,
-  LogoutOutlined,
-  ProfileOutlined,
-  UserOutlined
-} from '@ant-design/icons';
+import {LogoutOutlined, ProfileOutlined} from '@ant-design/icons';
 import React, {useState} from "react";
 import {useAuth0} from "../../react-auth0-spa";
 import paths from "../../utilities/paths";
 import { withRouter } from 'react-router-dom';
 import './navbar.scss';
-import resources from '../../config/resources';
+// import resources from '../../config/resources';
 import LocalInfo from "../../services/LocalInfo";
 
 
@@ -18,7 +13,7 @@ import LocalInfo from "../../services/LocalInfo";
 const { SubMenu } = Menu;
 
 const NavBar = (props) => {
-  const [current, setCurrent] = useState('mail');
+  const [current, setCurrent] = useState('accounts');
   const { isAuthenticated, logout } = useAuth0();
   const {history} = props;
 
@@ -35,6 +30,12 @@ const NavBar = (props) => {
   }
 
   /*
+  if (window.location.hash !== '#/' && current !== window.location.hash.replace('#/', '').split('/')[0]) {
+    setCurrent(window.location.replace('#/', '').split('/')[0]);
+  }
+  */
+
+  /*
   const currentPathElements = window.location.hash.replace("#",'').split('/');
   const resourceNames = resources.map(r => r.resource);
   for (let m = currentPathElements.length - 1; m >= 0; m--) {
@@ -49,8 +50,7 @@ const NavBar = (props) => {
 
   return (
     <Menu id="navbar-area" onClick={handleClick} selectedKeys={[current]} mode="horizontal" style={{visibility: isAuthenticated ? 'visible' : 'hidden'}} >
-      <Menu.Item key="mail" style={{fontSize: '20px'}} onClick={() => routeTo(paths.users)} className='nav-item'>
-        <UsergroupAddOutlined />
+      <Menu.Item key="users" style={{fontSize: '20px'}} onClick={() => routeTo(paths.users)} className='nav-item'>
         Accounts
       </Menu.Item>
       <Menu.Item key="products" style={{fontSize: '20px'}} onClick={() => routeTo(paths.products)} className='nav-item'>Products</Menu.Item>

@@ -15,6 +15,7 @@ const columns = [
     dataIndex: 'name',
     required: true,
     mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.string,
     }
@@ -23,7 +24,6 @@ const columns = [
     title: 'Measurement Unit',
     dataIndex: 'measurementUnit',
     required: false,
-    mainColumn: true,
     dataType: {
       type: inputTypes.string,
     }
@@ -32,7 +32,6 @@ const columns = [
     title: 'Barcode',
     dataIndex: 'barCode',
     required: false,
-    mainColumn: true,
     dataType: {
       type: inputTypes.string,
     }
@@ -42,8 +41,9 @@ const columns = [
     dataIndex: 'productCategoryId',
     isForeignEntity: true,
     resourceKey: 'productCategory',
+    resource: 'product_categories',
     required: false,
-    mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.multi,
     }
@@ -53,8 +53,9 @@ const columns = [
     dataIndex: 'manufacturerId',
     isForeignEntity: true,
     resourceKey: 'manufacturer',
+    resource: 'manufacturers',
     required: false,
-    mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.multi,
     }
@@ -64,8 +65,9 @@ const columns = [
     dataIndex: 'brandId',
     isForeignEntity: true,
     resourceKey: 'brand',
+    resource: 'brands',
     required: false,
-    mainColumn: true,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.multi,
     }
