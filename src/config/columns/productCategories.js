@@ -29,6 +29,18 @@ const columns = [
       type: inputTypes.multi,
     }
   },
+  {
+    title: 'Segment',
+    dataIndex: 'productSegmentId',
+    isForeignEntity: true,
+    resourceKey: 'productSegment',
+    resource: 'product_segments',
+    required: false,
+    isTableColumn: true,
+    dataType: {
+      type: inputTypes.multi,
+    }
+  },
 ];
 
 export default columns;

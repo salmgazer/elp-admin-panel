@@ -71,7 +71,7 @@ const ShowEditCreateForm = (props)  => {
     return selectInputComponent(column, values);
   };
 
-  const selectInputComponent = (column, values) => <Col span={isMobile ? 12 : 24}>
+  const selectInputComponent = (column, values) => <Col span={isMobile ? 24 : 12}>
     <Form.Item
       name={column.dataIndex}
       label={column.title}
@@ -122,7 +122,7 @@ const ShowEditCreateForm = (props)  => {
       const allInputRows = [];
       for (let m = 0; m < columns.length; m += 2) {
         const inputsRows = isMobile ? [
-          <Row gutter={24} key={m}>
+          <Row gutter={16} key={m}>
             {columns[m] ? pickCorrectInput(columns[m]) : ''}
           </Row>,
           <Row>
@@ -273,7 +273,10 @@ function mapStateToProps(state) {
     product_categories,
     business_categories,
     users,
-    clients
+    clients,
+    product_segments,
+    product_segment_entries,
+    customers
   } = state;
 
   return {
@@ -286,7 +289,9 @@ function mapStateToProps(state) {
     business_categories,
     users,
     clients,
-
+    product_segments,
+    product_segment_entries,
+    customers
   };
 }
 

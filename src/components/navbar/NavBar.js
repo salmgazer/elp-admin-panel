@@ -65,7 +65,7 @@ const NavBar = (props) => {
         <Menu.Item key="brands" className='nav-sub-item' onClick={() => routeTo(paths.brands)}>Brands</Menu.Item>
         <Menu.Item key="manufacturers" className='nav-sub-item' onClick={() => routeTo(paths.manufacturers)}>Manufacturers</Menu.Item>
         <Menu.Item key="product_categories" className='nav-sub-item' onClick={() => routeTo(paths.product_categories)}>Product Categories</Menu.Item>
-        <Menu.Item key="product_segments" className='nav-sub-item' onClick={() => routeTo(paths)}>Product Segments</Menu.Item>
+        <Menu.Item key="product_segments" className='nav-sub-item' onClick={() => routeTo(paths.product_segments)}>Product Segments</Menu.Item>
       </SubMenu>
       <SubMenu
         className='nav-item'
@@ -76,6 +76,7 @@ const NavBar = (props) => {
         }
       >
         <Menu.Item key="business_category" className='nav-sub-item' onClick={() => routeTo(paths.business_categories)}>Business Categories</Menu.Item>
+        <Menu.Item key="customers" className='nav-sub-item' onClick={() => routeTo(paths.customers)}>Customers</Menu.Item>
       </SubMenu>
       <SubMenu
         className='nav-item'
@@ -90,7 +91,7 @@ const NavBar = (props) => {
       </SubMenu>
     </Menu>
   );
-}
+};
 
 export default withRouter(NavBar);
 

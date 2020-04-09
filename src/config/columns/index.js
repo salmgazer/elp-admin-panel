@@ -6,7 +6,9 @@ import companies from './companies';
 import branches from './branches';
 import product_categories from './productCategories';
 import products from './products';
-
+import product_segments from './productSegmentsColumns';
+import product_segment_entries from './productSegmentEntries';
+import customers from './customers';
 
 
 const allColumns = {
@@ -17,7 +19,10 @@ const allColumns = {
   companies,
   branches,
   product_categories,
-  products
+  products,
+  product_segments,
+  product_segment_entries,
+  customers
 };
 
 

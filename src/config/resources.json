@@ -136,7 +136,55 @@
     "canDelete": true,
     "showCreatedAt": true,
     "showUpdatedAt": true
+  },
+  {
+    "resource": "product_segment_entries",
+    "primaryKeyName": "id",
+    "displayName": "Product Segment Entries",
+    "mainColumnName": "name",
+    "isReady": true,
+    "isGeneric": true,
+    "canEdit": true,
+    "useHashLink": true,
+    "showCreatedAt": true,
+    "showUpdatedAt": true
+  },
+  {
+    "resource": "product_segments",
+    "displayName": "Product Segments",
+    "primaryKeyName": "id",
+    "mainColumnName": "name",
+    "displayColumns": ["name"],
+    "isReady": true,
+    "isGeneric": true,
+    "canEdit": true,
+    "canDelete": true,
+    "showCreatedAt": true,
+    "showUpdatedAt": true,
+    "child": {
+      "resource": "product_segment_entries",
+      "primaryKeyName": "id",
+      "displayName": "Product Segment Entries",
+      "mainColumnName": "name",
+      "isReady": true,
+      "isGeneric": true,
+      "canEdit": true,
+      "showCreatedAt": true,
+      "showUpdatedAt": true
+    }
+  },
+  {
+    "resource": "customers",
+    "displayName": "Customers",
+    "primaryKeyName": "id",
+    "mainColumnName": "firstName",
+    "isReady": true,
+    "isGeneric": true,
+    "canEdit": true,
+    "showCreatedAt": true,
+    "showUpdatedAt": true
   }
 ]
+
 
 

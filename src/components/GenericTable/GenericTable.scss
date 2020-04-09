@@ -2,19 +2,17 @@
   color: white;
   background-color: #47cf73;
   border-radius: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding: 5px 10px;
 }
 
 .btn-appearance {
-  background-color: #007462;
+  background-color: white;
   border-color: #007462;
   font-weight: normal;
+  color: #007462;
   &:hover {
-    color: #007462;
-    background-color: white;
+    color: white;
+    background-color: #007462;
     font-weight: normal;
     border-color: #007462;
   }
@@ -79,18 +77,16 @@ tbody {
 }
 
 #add-btn {
-  margin-top: 20px;
-  margin-bottom: 40px;
-  background-color: #CAC932;
-  border-color: #CAC932;
+  background-color: #00B0DA;
+  border-color: #00B0DA;
   color: white;
-  width: 60px;
-  height: 60px;
-  font-size: 30px;
   text-align: center;
-  box-shadow: 0 2px 4px 0 #75741d;
+  box-shadow: 0 2px 4px 0 #005f76;
+  margin-left: 50px;
+  margin-right: 20px;
+  font-weight: bold;
   &:hover {
-    box-shadow: 0 4px 8px 0 #75741d;
+    box-shadow: 0 4px 8px 0 #005f76;
   }
 }
 

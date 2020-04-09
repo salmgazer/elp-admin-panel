@@ -8,5 +8,7 @@ export default {
     companies : "/users/:id/companies",
     business_categories : "/business_categories",
     users: "/users",
-    product_segments: "/product_segments"
+    product_segments: "/product_segments",
+    product_segment_entries: "/product_segments/:id/product_segment_entries",
+    customers: "/customers"
 };

@@ -37,7 +37,7 @@ const columns = [
     }
   },
   {
-    title: 'Product Category',
+    title: 'Category',
     dataIndex: 'productCategoryId',
     isForeignEntity: true,
     resourceKey: 'productCategory',

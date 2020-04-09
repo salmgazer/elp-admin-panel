@@ -273,6 +273,10 @@ class GenericTable extends React.Component {
     const resourceDisplayName = resource.displayName || resourceName;
     let updatedColumns = Object.assign([], columns);
     const mainColumn = updatedColumns.find(column => column.mainColumn === true);
+    console.log("******************************");
+    console.log(columns);
+    console.log(mainColumn);
+    console.log("******************************");
     const parentColumn =  updatedColumns.find(column => column.dataIndex === 'parentId');
 
     if (parentColumn && this.props[resourceName]) {
@@ -488,7 +492,7 @@ class GenericTable extends React.Component {
         <Row className="title-row">
           <Col className="gutter-row" span={9}>
             <Title className={isMobile ? 'table-title-mobile' : 'table-title'}>
-              All {resourceDisplayName}
+              {resourceDisplayName}
             </Title>
           </Col>
           <Col span={9}>
@@ -527,6 +531,20 @@ class GenericTable extends React.Component {
               style={{marginRight: '10px', }}
             >
               { !isMobile ? 'Export' : '' }
+            </Button>
+            <Button
+              htmlType="submit"
+              onClick={() => {
+                this.setState({
+                  recordToEdit: null,
+                  formAction: actionTypes.create
+                });
+                this.showEditDrawer();
+              }}
+              icon={'plus'}
+              id={"add-btn"}
+            >
+              New
             </Button>
           </Col>
         </Row>
@@ -599,7 +617,10 @@ class GenericTable extends React.Component {
                 pagination={{
                   position: "bottom",
                   hideOnSinglePage: true,
-                  size: 10
+                  size: 10,
+                  showQuickJumper: true,
+                  showSizeChanger: true,
+                  showLessItems: true,
                 }}
                 onRow={(record, rowIndex) => {
                   return {
@@ -616,21 +637,6 @@ class GenericTable extends React.Component {
               />
           }
         </div>
-        <Button
-          htmlType="submit"
-          className="login-form-button"
-          shape='circle'
-          onClick={() => {
-            this.setState({
-              recordToEdit: null,
-              formAction: actionTypes.create
-            });
-            this.showEditDrawer();
-          }}
-          id={"add-btn"}
-        >
-          +
-        </Button>
       </div>
     );
   }
@@ -646,7 +652,10 @@ function mapStateToProps(state) {
     product_categories,
     business_categories,
     users,
-    clients
+    clients,
+    product_segments,
+    product_segment_entries,
+    customers
   } = state;
 
   return {
@@ -659,7 +668,9 @@ function mapStateToProps(state) {
     business_categories,
     users,
     clients,
-
+    product_segments,
+    product_segment_entries,
+    customers
   };
 }
 

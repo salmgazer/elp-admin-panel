@@ -1,6 +1,4 @@
 import * as actionTypes from './actionTypes';
-// import { alert } from './common';
-// import * as commonTypes from './common/actionTypes';
 import pluralize from 'pluralize';
 import Api from '../../services/Api';
 import {message} from 'antd';
