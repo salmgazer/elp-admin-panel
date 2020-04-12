@@ -18,8 +18,10 @@ const ShowEditCreateForm = (props)  => {
   const {getFieldDecorator} = props.form;
   const resourceName = resource.resource;
   const resourceDisplayName = resource.displayName || resourceName;
-  const finalColumns = action === actionTypes.create ? columns.filter(col => col.dataIndex !== resource.primaryKeyName || col.userBasedPrimaryKey) : columns;
-
+  let finalColumns = action === actionTypes.create ? columns.filter(col => col.dataIndex !== resource.primaryKeyName || col.userBasedPrimaryKey) : columns;
+  if ([actionTypes.edit, actionTypes.show].includes(action)) {
+    finalColumns = [actionTypes.edit, actionTypes.show].includes(action) ? columns.filter(col => !col.cannotShow) : columns;
+  }
 
   useEffect(() => {
     if (['edit', 'create'].includes(action)) {
@@ -86,7 +88,7 @@ const ShowEditCreateForm = (props)  => {
         rules: [{ required: true, message: `Please enter ${column.title} of ${resourceDisplayName}` }],
       })(
         <Select
-          style={{ width: 350 }}
+          style={{ width: 328 }}
           showSearch
           placeholder={`Please select ${column.title}`}
           onSearch={(val) => console.log(val)}
@@ -249,9 +251,6 @@ const ShowEditCreateForm = (props)  => {
                     removeNulls(updatedRowObject);
                     if (action === actionTypes.edit) {
                       const identifierValue = updatedRowObject[resource.primaryKeyName];
-                      console.log(identifierValue);
-                      console.log(updatedRowObject);
-                      console.log(resource);
                       dispatch(actions.updateOne(identifierValue, updatedRowObject, resource));
                     } else if (action === actionTypes.create) {
                       dispatch(actions.createOne(updatedRowObject, resource));

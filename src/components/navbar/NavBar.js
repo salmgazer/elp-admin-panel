@@ -9,6 +9,7 @@ import './navbar.scss';
 import LocalInfo from "../../services/LocalInfo";
 
 
+import logoPath from "../../assets/img/small.png";
 
 const { SubMenu } = Menu;
 
@@ -50,6 +51,9 @@ const NavBar = (props) => {
 
   return (
     <Menu id="navbar-area" onClick={handleClick} selectedKeys={[current]} mode="horizontal" style={{visibility: isAuthenticated ? 'visible' : 'hidden'}} >
+      <Menu.Item key="home" style={{fontSize: '20px'}} onClick={() => routeTo('/')} className='home-nav-item'>
+        <Avatar className={'user-avatar'} size={"large"} src={logoPath} />
+      </Menu.Item>
       <Menu.Item key="users" style={{fontSize: '20px'}} onClick={() => routeTo(paths.users)} className='nav-item'>
         Accounts
       </Menu.Item>
@@ -82,7 +86,7 @@ const NavBar = (props) => {
         className='nav-item'
         title={
           <span className="submenu-title-wrapper" style={{fontSize: '30px'}}>
-            <Avatar size={"large"} src={LocalInfo.userPicture} />
+            <Avatar className={'user-avatar'}  size={"large"} src={LocalInfo.userPicture} />
           </span>
         }
       >

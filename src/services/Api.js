@@ -70,6 +70,18 @@ class Api {
         if (identifierValue) {
           hashUrl = hashUrl[hashUrl.length - 1] === '/' ? `${hashUrl}${identifierValue}` : `${hashUrl}/${identifierValue}`;
         }
+
+        // @todo remove duplicate
+        if (this.searchConfig) {
+          const searchConfigKeys = Object.keys(this.searchConfig);
+          hashUrl = `${hashUrl}?`;
+          for (let m = 0; m < searchConfigKeys.length; m++) {
+            hashUrl = `${hashUrl}${searchConfigKeys[m]}=${this.searchConfig[searchConfigKeys[m]]}`;
+            if (m < searchConfigKeys.length - 1) {
+              hashUrl = `${hashUrl}&`;
+            }
+          }
+        }
         return hashUrl;
       }
 

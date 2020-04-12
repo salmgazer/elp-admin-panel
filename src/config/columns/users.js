@@ -2,6 +2,15 @@ import inputTypes from "../inputTypes";
 
 const columns = [
   {
+    title: 'ID',
+    dataIndex: 'userId',
+    required: true,
+    dataType: {
+      type: inputTypes.string,
+      primaryKey: true
+    }
+  },
+  {
     title: 'First name',
     dataIndex: 'firstName',
     key: 'firstName',
