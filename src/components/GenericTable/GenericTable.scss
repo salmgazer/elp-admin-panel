@@ -97,3 +97,33 @@ tbody {
   box-shadow: 0 0.4px 1px 0 grey;
   border-radius: 4px;
 }
+
+
+.breadcrumb-link {
+  background-color: white;
+  border-radius: 10px;
+  padding: 5px 10px;
+  border: 1px solid #daab59;
+  text-align: right;
+  float: right;
+  margin-top: 10px;
+  &:hover {
+    color: #daab59;
+  }
+}
+
+.breadcrumb {
+  background-color: #FFF8F0;
+  text-align: left;
+  font-weight: bolder;
+  margin-right: 10px;
+  border-left: 2px solid #daab59;
+  color: #135A6D;
+  overflow: hidden;
+}
+
+.breadcrumb-panel {
+  border-bottom: 0px !important;
+  border-radius: 2px;
+}
+

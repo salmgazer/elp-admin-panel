@@ -15,10 +15,10 @@ import {
   message,
   notification,
   Card,
-  Avatar,
-  List
+  List,
+  Collapse
 } from 'antd';
-import { EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, EyeOutlined, RightOutlined } from '@ant-design/icons';
 import './GenericTable.scss';
 import ShowEditCreateForm from '../ShowEditCreateForm/ShowEditCreateForm';
 import actionTypes from '../../config/actionTypes';
@@ -27,7 +27,15 @@ import inputTypes from "../../config/inputTypes";
 import XLSX from 'xlsx';
 import { connect } from 'react-redux';
 import actions from '../../state/actions';
+import mapStateToProps from '../common/mapStateToProps';
+import pluralize from 'pluralize';
+import allResources from "../../config/resources";
+import allColumns from "../../config/columns";
 import paths from "../../utilities/paths";
+
+console.log(allResources);
+
+const { Panel } = Collapse;
 
 const {Title} = Typography;
 
@@ -37,7 +45,11 @@ class GenericTable extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = this.initialState;
+    let newState = this.initialState;
+    if (!this.state || !this.state.routes) {
+      newState = {...newState, ...{routes: []}};
+    }
+    this.state = newState;
 
     this.showEditDrawer = this.showEditDrawer.bind(this);
     this.closeCreateOrEditDrawer = this.closeCreateOrEditDrawer.bind(this);
@@ -65,6 +77,7 @@ class GenericTable extends React.Component {
     });
   };
 
+  /*
   save(form, id) {
     form.validateFields((error, row) => {
       if (error) {
@@ -98,6 +111,7 @@ class GenericTable extends React.Component {
       }
     });
   }
+  */
 
   downloadCSV() {
     const {searchValue} = this.state;
@@ -109,7 +123,7 @@ class GenericTable extends React.Component {
     }
 
     new Api(this.props.resource, {}, {'Content-Type': 'text/csv'})
-        .index().then((res) => {
+      .index().then((res) => {
       const element = document.createElement('a');
       element.setAttribute('href',
         `data:text/csv;charset=utf-8,${encodeURI(res.data)}`);
@@ -122,15 +136,17 @@ class GenericTable extends React.Component {
     });
   }
 
-  addPathToRoute(record) {
+  addPathToRoute(record, resource, pathColumns) {
     const {routes} = this.state;
 
     if (record) {
       const {resource} = this.props;
       const updatedRoutes = routes;
       updatedRoutes.push({
-        path: resource.resource,
-        breadcrumbName: `${resource.displayName}: ${resource.displayColumns.map(displayCol => record[displayCol]).join(" ")}`
+        path: window.location.hash,
+        record,
+        resource,
+        columns: pathColumns
       });
       this.setState({
         routes: updatedRoutes
@@ -152,12 +168,68 @@ class GenericTable extends React.Component {
   }
 
   componentDidMount() {
+    const {routes} = this.state;
+    const {resource, dispatch, history} = this.props;
+    if (this.props.location.state && this.props.location.state.routes) {
+      this.setState({
+        routes: this.props.location.state.routes
+      });
+    }
     this.fetchIndexFromStore();
+
+    // get routes
+    /*
+    if (routes && routes.length === 0) {
+      if (resource.parentResourceNames) {
+        let parentResourcePath = '';
+
+        const parentResources = resource.parentResourceNames.reverse()
+            .map( parentResourceName => allResources[parentResourceName]);
+        parentResources.forEach(parentResource => {
+          // get parent resource record
+          let parentRecord = this.props[parentResource.resource]
+              .find(item => item[parentResource[resource.primaryKeyName]]);
+          const oneCurrentRecord = this.props[resource.resource][0] ?
+              this.props[resource.resource][0][parentResource.foreignKeyName] : null;
+          console.log(parentResource);
+          console.log(parentRecord);
+          console.log(oneCurrentRecord);
+          if (parentRecord && oneCurrentRecord) {
+            parentResourcePath = `${parentResource.resource}/${parentRecord[parentResource.primaryKeyName]}`;;
+            this.addPathToRoute(parentRecord, parentResource, parentResourcePath);
+          }
+        });
+
+      }
+    }
+    */
+
+    /*
+    if (this.props.history.action === "POP") {
+      // custom back button implementation
+      console.log(history.location);
+      if (history.location.state && history.location.state.previousPath) {
+        history.push({
+          pathname: history.location.state.previousPath,
+          state: {
+            previousPath: window.location.hash.split(`/${resource.resource}`)[0],
+            routes: this.state.routes.filter(route => route.resource !== resource.resource)
+          }
+        });
+      }
+    }
+    */
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log(this.props.location.state);
     if (prevState.tableName !== this.props.resource.resource) {
       this.fetchIndexFromStore();
+      if (this.props.location.state.routes) {
+        this.setState({
+          routes: this.props.location.state.routes
+        });
+      }
     }
   }
 
@@ -180,18 +252,28 @@ class GenericTable extends React.Component {
   }
 
   routeOrShowRender(resource, record) {
-     const {history} = this.props;
-     if (!resource.child) {
-       this.setState({
-         formAction: actionTypes.show
-       });
-       this.showEditDrawer(record);
-     } else {
-       // add next path to routes
-       this.addPathToRoute(record);
-       history.push(`${resource.resource}/${record[resource.primaryKeyName]}/${resource.child.resource}`);
-     }
-   }
+    const {history} = this.props;
+    if (!resource.child) {
+      this.setState({
+        formAction: actionTypes.show
+      });
+      this.showEditDrawer(record);
+    } else {
+      // add next path to routes
+      this.addPathToRoute(record, resource, this.props.columns);
+      if (this.state.routes && this.state.routes.length > 0) {
+        history.push({
+          pathname: `${resource.resource}/${record[resource.primaryKeyName]}/${resource.child.resource}`,
+          state: {
+            routes: this.state.routes,
+            previousPath: window.location.hash,
+          }
+        });
+      } else {
+        history.push(`${resource.resource}/${record[resource.primaryKeyName]}/${resource.child.resource}`);
+      }
+    }
+  }
 
   async handleFileChosen(e) {
     const {columns, resource, dispatch} = this.props;
@@ -273,10 +355,6 @@ class GenericTable extends React.Component {
     const resourceDisplayName = resource.displayName || resourceName;
     let updatedColumns = Object.assign([], columns);
     const mainColumn = updatedColumns.find(column => column.mainColumn === true);
-    console.log("******************************");
-    console.log(columns);
-    console.log(mainColumn);
-    console.log("******************************");
     const parentColumn =  updatedColumns.find(column => column.dataIndex === 'parentId');
 
     if (parentColumn && this.props[resourceName]) {
@@ -288,17 +366,17 @@ class GenericTable extends React.Component {
             onClick={() => {
               this.routeOrShowRender(resource, parentRecord);
             }}>
-              <Tag
-                style={{
-                  color: '#007462',
-                  cursor: 'pointer',
-                  fontSize: '15px',
-                  paddingBottom: '3px',
-                  paddingTop: '3px',
-                }}>
-                {parentRecord[resource.mainColumnName]}
-              </Tag>
-            </Col>;
+            <Tag
+              style={{
+                color: '#007462',
+                cursor: 'pointer',
+                fontSize: '15px',
+                paddingBottom: '3px',
+                paddingTop: '3px',
+              }}>
+              {parentRecord[resource.mainColumnName]}
+            </Tag>
+          </Col>;
         }
         return '';
       }
@@ -311,16 +389,16 @@ class GenericTable extends React.Component {
           {
             !record[updatedColumn.resourceKey] ? ''
               :
-            <Tag
-              style={{
-                color: '#007462',
-                cursor: 'pointer',
-                fontSize: '15px',
-                paddingBottom: '3px',
-                paddingTop: '3px',
-              }}>
-              { record ? record[updatedColumn.resourceKey].name : ''}
-            </Tag>
+              <Tag
+                style={{
+                  color: '#007462',
+                  cursor: 'pointer',
+                  fontSize: '15px',
+                  paddingBottom: '3px',
+                  paddingTop: '3px',
+                }}>
+                { record ? record[updatedColumn.resourceKey].name : ''}
+              </Tag>
           }
         </b>
     });
@@ -329,8 +407,8 @@ class GenericTable extends React.Component {
       <b
         style={{ cursor: 'pointer'}}
         onClick={() => {
-        this.routeOrShowRender(resource, record);
-      }}>{text}</b>;
+          this.routeOrShowRender(resource, record);
+        }}>{text}</b>;
 
     if (resource.showCreatedAt) {
       updatedColumns.push({
@@ -474,7 +552,6 @@ class GenericTable extends React.Component {
       }
       return result;
     };
-
     return (
       <div>
         <ShowEditCreateForm
@@ -495,16 +572,7 @@ class GenericTable extends React.Component {
               {resourceDisplayName}
             </Title>
           </Col>
-          <Col span={9}>
-            {
-              this.state.routes.length > 0 ?
-                <PageHeader
-                  onBack={() => null}
-                  breadcrumb={{ routes: this.state.routes }}
-                /> : ''
-            }
-          </Col>
-          <Col style={{ textAlign: 'right', float: 'right', marginRight: isMobile ? '10px' : '20px' }} span={isMobile ? 8 : 6}>
+          <Col style={{ textAlign: 'right', float: 'right', marginRight: isMobile ? '10px' : '20px' }} span={isMobile ? 8 : 10}>
             <input
               accept=".xls,.xlsx"
               id="file-import-button"
@@ -555,34 +623,73 @@ class GenericTable extends React.Component {
             marginRight: '40px'
           }}
         >
+          <Row gutter={2} style={{marginBottom: '30px'}}>
+            {
+              this.state.routes.map(
+                route =>
+                  <Col key={route.path} span={6}>
+                    <Collapse
+                      onChange={key => console.log(key)}
+                      bordered={false}
+                      className={'breadcrumb'}
+                    >
+                      <Panel
+                        header={route.resource.displayName}
+                        key="1"
+                        className={'breadcrumb-panel'}
+                      >
+                        {
+                          route.columns.filter(col => col.dataIndex !== route.resource.primaryKeyName || col.userBasedPrimaryKey).map(col =>
+                            <Row key={col.dataIndex} gutter={4} style={{marginBottom: '10px', marginLeft: '20px'}}>
+                              <Col span={8} style={{fontWeight: 'bolder'}}>{pluralize.singular(col.title)}</Col>
+                              <Col span={16} style={{fontWeight: 'normal'}}>{
+                                // route.record[col.dataIndex]
+                                col.isForeignEntity ?
+                                route.record[col.resourceKey][allResources.find(r => r.resource === col.resource).mainColumnName]
+                                : route.record[col.dataIndex]
+                                }</Col>
+                            </Row>
+                          )
+                        }
+                        <Row gutter={2}>
+                          <a href={route.path} className={'breadcrumb-link'}>
+                            Go to <RightOutlined />
+                          </a>
+                        </Row>
+                      </Panel>
+                    </Collapse>
+                  </Col>
+              )
+            }
+          </Row>
           <Row gutter={8}>
-          <Form className="login-form">
-            <Col className="gutter-row" span={ isMobile? 24 : 6}>
-              <div className="gutter-box search-bar-area">
-                <Input.Search
-                  size="large"
-                  placeholder="Search"
-                  onChange={e => {
-                    this.setState({
-                      searchValue: e.target.value
-                    });
-                  }}
-                  onSearch={ value => {
-                    this.fetchIndexFromStore();
-                  }}
+            <Form className="login-form">
+              <Col className="gutter-row" span={ isMobile? 24 : 6}>
+                <div className="gutter-box search-bar-area">
+                  <Input.Search
+                    size="large"
+                    placeholder="Search"
+                    onChange={e => {
+                      this.setState({
+                        searchValue: e.target.value
+                      });
+                    }}
+                    onSearch={ value => {
+                      this.fetchIndexFromStore();
+                    }}
 
-                  onPressEnter={ e => {
-                    this.fetchIndexFromStore();
-                  }}
+                    onPressEnter={ e => {
+                      this.fetchIndexFromStore();
+                    }}
 
-                  onPaste={ e => {
-                    this.fetchIndexFromStore();
-                  }}
-                />
-              </div>
-            </Col>
-          </Form>
-        </Row>
+                    onPaste={ e => {
+                      this.fetchIndexFromStore();
+                    }}
+                  />
+                </div>
+              </Col>
+            </Form>
+          </Row>
           {
             isMobile ?
               <List
@@ -642,36 +749,5 @@ class GenericTable extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  const {
-    brands,
-    companies,
-    branches,
-    products,
-    manufacturers,
-    product_categories,
-    business_categories,
-    users,
-    clients,
-    product_segments,
-    product_segment_entries,
-    customers
-  } = state;
-
-  return {
-    brands,
-    companies,
-    branches,
-    products,
-    manufacturers,
-    product_categories,
-    business_categories,
-    users,
-    clients,
-    product_segments,
-    product_segment_entries,
-    customers
-  };
-}
 
 export default Form.create()(withRouter(connect(mapStateToProps)(GenericTable)));

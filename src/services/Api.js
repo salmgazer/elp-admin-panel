@@ -66,7 +66,11 @@ class Api {
       }
 
       if (this.useHashLink) {
-        return `${this.constructor.apiUrl}${window.location.hash.replace("#", '')}`;
+        let hashUrl = `${this.constructor.apiUrl}${window.location.hash.replace("#", '')}`;
+        if (identifierValue) {
+          hashUrl = hashUrl[hashUrl.length - 1] === '/' ? `${hashUrl}${identifierValue}` : `${hashUrl}/${identifierValue}`;
+        }
+        return hashUrl;
       }
 
       let fullUrl = this.constructor.apiUrl;
