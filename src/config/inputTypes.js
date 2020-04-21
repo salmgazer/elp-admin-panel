@@ -3,5 +3,8 @@ module.exports = {
   number: 'number',
   multi: 'multi',
   boolean: 'boolean',
-  date: 'date'
+  date: 'date',
+  multipleValues: 'multipleValues', // chips
+  dynamicMultiWithChildren: 'dynamicMultiWithChildren',
+  picture: 'picture'
 };

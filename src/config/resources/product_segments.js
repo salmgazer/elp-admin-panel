@@ -4,6 +4,7 @@ export default {
   resource: "product_segments",
   displayName: "Product Segments",
   primaryKeyName: "id",
+  foreignKeyName: "productSegmentId",
   mainColumnName: "name",
   displayColumns: ["name"],
   isReady: true,

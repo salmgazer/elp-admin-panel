@@ -25,20 +25,22 @@ const columns = [
     dataIndex: 'parentId',
     required: true,
     isTableColumn: true,
+    showParentsOnly: true,
     dataType: {
       type: inputTypes.multi,
     }
   },
   {
-    title: 'Segment',
-    dataIndex: 'productSegmentId',
+    title: 'Product Segments',
+    dataIndex: 'productSegmentIds',
+    notAccessibleToParent: true,
     isForeignEntity: true,
     resourceKey: 'productSegment',
     resource: 'product_segments',
     required: false,
     isTableColumn: true,
     dataType: {
-      type: inputTypes.multi,
+      type: inputTypes.multipleValues,
     }
   },
 ];

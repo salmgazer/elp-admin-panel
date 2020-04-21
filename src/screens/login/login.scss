@@ -4,6 +4,10 @@
   font-size: 20px;
   background-color: rgb(218, 171, 89);
   color: white;
+  &:hover {
+    border-color: rgb(218, 171, 89);
+    box-shadow: 0 2px 4px 0 rgb(116, 91, 47);
+  }
 }
 #home-page-title {
   font-size: 50px;
@@ -13,8 +17,8 @@
 #login-card {
   margin-left: 30%;
   margin-right: 30%;
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 30px;
+  padding-bottom: 30px;
   text-align: center;
   box-shadow: 0 4px 8px 0 #dcc7a4;
   transition: 0.3s;
@@ -24,6 +28,9 @@
 
 #logo-area {
   margin-bottom: 30px;
+  #logo {
+    width: 250px;
+  }
 }
 
 @media only screen and (max-width: 950px) {

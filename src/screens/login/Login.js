@@ -4,7 +4,7 @@ import './login.scss';
 import { useAuth0 } from "../../react-auth0-spa";
 import paths from "../../utilities/paths";
 import { withRouter } from 'react-router-dom';
-import Logo from '../../assets/img/el-parah.png';
+import Logo from '../../assets/img/small.png';
 
 
 const { Title } = Typography;
@@ -19,7 +19,7 @@ const Login = (props) => {
       {!isAuthenticated && (
         <Row id="login-card">
           <Col span={24} id="logo-area">
-            <img id="logo" className="img-responsive" src={Logo} alt={'Elparah Logo'}/>
+            <img id="logo" src={Logo} alt={'Elparah Logo'}/>
           </Col>
           <Col span={24}>
             <Title id="home-page-title">Admin Panel</Title>

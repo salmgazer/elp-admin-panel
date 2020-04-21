@@ -3,6 +3,7 @@ export default {
   hasParent: true,
   displayName: "Product Categories",
   primaryKeyName: "id",
+  foreignKeyName: "productCategoryId",
   mainColumnName: "name",
   isReady: true,
   isGeneric: true,
@@ -11,5 +12,8 @@ export default {
   canEdit: true,
   canDelete: true,
   showCreatedAt: true,
-  showUpdatedAt: true
+  showUpdatedAt: true,
+  hasMany: [
+    'product_segments'
+  ]
 }

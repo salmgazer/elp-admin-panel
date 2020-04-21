@@ -9,7 +9,7 @@ import {
   Typography,
   Col,
   Row,
-  PageHeader,
+  // PageHeader,
   Tag,
   Divider,
   message,
@@ -30,10 +30,7 @@ import actions from '../../state/actions';
 import mapStateToProps from '../common/mapStateToProps';
 import pluralize from 'pluralize';
 import allResources from "../../config/resources";
-import allColumns from "../../config/columns";
-import paths from "../../utilities/paths";
 
-console.log(allResources);
 
 const { Panel } = Collapse;
 
@@ -168,13 +165,23 @@ class GenericTable extends React.Component {
   }
 
   componentDidMount() {
-    const {routes} = this.state;
-    const {resource, dispatch, history} = this.props;
+    // const {routes} = this.state;
+    // const {resource, dispatch, history} = this.props;
     if (this.props.location.state && this.props.location.state.routes) {
       this.setState({
         routes: this.props.location.state.routes
       });
     }
+
+    const dynamicMultiWithChildrenCol = this.props.columns.find(col => col.isTableColumn === true && col.dataType.type === inputTypes.dynamicMultiWithChildren);
+
+    if (dynamicMultiWithChildrenCol) {
+      if (dynamicMultiWithChildrenCol.primaryResourceConfig && this.props[dynamicMultiWithChildrenCol.primaryResourceConfig.resource] &&
+        this.props[dynamicMultiWithChildrenCol.primaryResourceConfig.resource].length === 0) {
+        this.fetchIndexFromStore(dynamicMultiWithChildrenCol.primaryResourceConfig); // fetching flavour etc
+      }
+    }
+
     this.fetchIndexFromStore();
 
     // get routes
@@ -222,7 +229,6 @@ class GenericTable extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log(this.props.location.state);
     if (prevState.tableName !== this.props.resource.resource) {
       this.fetchIndexFromStore();
       if (this.props.location.state.routes) {
@@ -233,7 +239,7 @@ class GenericTable extends React.Component {
     }
   }
 
-  fetchIndexFromStore() {
+  fetchIndexFromStore(resourceConfig) {
     const { dispatch, resource } = this.props;
     const {searchValue} = this.state;
     const options = {};
@@ -244,7 +250,7 @@ class GenericTable extends React.Component {
       }
     }
 
-    dispatch(actions.index(resource, {}, options));
+    dispatch(actions.index(resourceConfig || resource, {}, options));
   }
 
   edit(key) {
@@ -399,6 +405,38 @@ class GenericTable extends React.Component {
                 }}>
                 { record ? record[updatedColumn.resourceKey].name : ''}
               </Tag>
+          }
+        </b>
+    });
+
+    updatedColumns.filter(col => col.dataType.type === inputTypes.dynamicMultiWithChildren).forEach(updatedColumn => {
+      updatedColumn.render = (text, record) =>
+        <b style={{ cursor: 'pointer', fontWeight: 'normal'}}>
+          {
+            !this.props[updatedColumn.primaryResourceConfig.resource] ? ''
+              :
+              (this.props[updatedColumn.primaryResourceConfig.resource]
+                .find(item => item[updatedColumn.primaryResourceConfig.primaryKeyName]
+                  === record[updatedColumn.primaryResourceConfig.foreignKeyName]) ?
+                this.props[updatedColumn.primaryResourceConfig.resource]
+                  .find(item => item[updatedColumn.primaryResourceConfig.primaryKeyName]
+                    === record[updatedColumn.primaryResourceConfig.foreignKeyName]).product_segments : [])
+                  .map(
+                  item =>
+                    <Tag
+                      key={item.id}
+                      style={{
+                        color: '#007462',
+                        cursor: 'pointer',
+                        fontSize: '15px',
+                        paddingBottom: '3px',
+                        paddingTop: '3px',
+                        marginBottom: '6px'
+                      }}
+                    >
+                  { item.name }
+                </Tag>
+                )
           }
         </b>
     });
@@ -629,7 +667,6 @@ class GenericTable extends React.Component {
                 route =>
                   <Col key={route.path} span={6}>
                     <Collapse
-                      onChange={key => console.log(key)}
                       bordered={false}
                       className={'breadcrumb'}
                     >

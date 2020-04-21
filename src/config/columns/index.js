@@ -6,7 +6,7 @@ import companies from './companies';
 import branches from './branches';
 import product_categories from './productCategories';
 import products from './products';
-import product_segments from './productSegmentsColumns';
+import product_segments from './productSegments';
 import product_segment_entries from './productSegmentEntries';
 import customers from './customers';
 

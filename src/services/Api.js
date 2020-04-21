@@ -60,9 +60,9 @@ class Api {
       return axios(requestConfig);
     }
 
-    _generateUrl(identifierValue, customUrl) {
-      if (customUrl) {
-        return customUrl;
+    _generateUrl(identifierValue) {
+      if (this.url) {
+        return `${this.constructor.apiUrl}${this.url}`;
       }
 
       if (this.useHashLink) {
