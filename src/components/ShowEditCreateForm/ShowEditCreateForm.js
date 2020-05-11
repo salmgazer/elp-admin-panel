@@ -1,7 +1,8 @@
 import './ShowEditCreateForm.scss';
 import React, {useEffect} from 'react';
-import {Drawer, Form, Button, Col, Row, Input, Select, Card, Tag, Tabs} from 'antd';
+import {Drawer, Form, Button, Col, Row, Input, Select, Card, Tag, Tabs, InputNumber, DatePicker} from 'antd';
 import capitalize from 'capitalize';
+import pluralize from 'pluralize';
 import inputTypes from '../../config/inputTypes';
 import actionTypes from '../../config/actionTypes';
 import resources from '../../config/resources';
@@ -76,6 +77,51 @@ const ShowEditCreateForm = (props)  => {
 
   /**
    * @param column
+   * @returns {*}
+   */
+  const numberInput = (column) => {
+    return <Col span={isMobile ? 24 : 12}>
+      <Form.Item
+        name={column.dataIndex}
+        label={column.title}
+        rules={[{ required: column.required || false, message: `Please enter ${pluralize.singular(column.title)}` }]}
+      >
+        {getFieldDecorator(column.dataIndex, {
+          initialValue: record ? record[column.dataIndex] : 0,
+          rules: [{ required: column.required || false, message: `Please enter ${column.title} of ${pluralize.singular(resourceDisplayName)}` }],
+        })(
+          <InputNumber min={0} style={{ width: '300px'}}  disabled={column.dataType.primaryKey === true && !column.userBasedPrimaryKey} placeholder={`${column.title} of ${pluralize.singular(resourceDisplayName)}`} />
+        )}
+      </Form.Item>
+    </Col>
+  };
+
+
+  /**
+   * @param column
+   * @returns {*}
+   */
+  const dateInput = (column) => {
+    return <Col span={isMobile ? 24 : 12}>
+      <Form.Item
+        name={column.dataIndex}
+        label={column.title}
+        rules={[{ required: column.required || false, message: `Please enter ${pluralize.singular(column.title)}` }]}
+      >
+        {getFieldDecorator(column.dataIndex, {
+          rules: [{ required: column.required || false, message: `Please enter ${column.title} of ${pluralize.singular(resourceDisplayName)}` }],
+        })(
+          <DatePicker style={{ width: '300px'}}
+                      disabled={column.dataType.primaryKey === true && !column.userBasedPrimaryKey}
+                      placeholder={`${column.title} of ${pluralize.singular(resourceDisplayName)}`}
+          />
+        )}
+      </Form.Item>
+    </Col>
+  };
+
+  /**
+   * @param column
    * @param values
    * @param type can be array of strings or array of objects(resources)
    * @returns {*}
@@ -110,6 +156,7 @@ const ShowEditCreateForm = (props)  => {
             }],
         })(
           <Select
+            disabled={column.cannotEdit}
             style={{ width: column.dataType.type === inputTypes.dynamicMultiWithChildren ? 650 : 328 }}
             showSearch
             mode={mode}
@@ -120,7 +167,7 @@ const ShowEditCreateForm = (props)  => {
             }
           >
             {
-              (column.dataType.values || values).map(value =>
+              (column.dataType.values || (column.dataIndex === 'parentId' ? values.filter(val => !val.parentId && (record ? val.id !== record.id : true)) : values)).map(value =>
                 <Option
                   key={typeof value === 'string' ? value : value.id}
                   value={typeof value === 'string' ? value : value.id}>
@@ -205,6 +252,12 @@ const ShowEditCreateForm = (props)  => {
       case inputTypes.multipleValues: {
         return selectInput(column, props[resourceName], 'multiple');
       }
+      case inputTypes.number: {
+        return numberInput(column);
+      }
+      case inputTypes.date: {
+        return dateInput(column);
+      }
       default: {
         return stringInput(column)
       }
@@ -252,7 +305,7 @@ const ShowEditCreateForm = (props)  => {
                         paddingBottom: '3px',
                         paddingTop: '3px',
                       }}>
-                      {records.find(r => r[resource.primaryKeyName] === parentRecordId).name}
+                      {record.parent[resource.mainColumnName]}
                     </div>
                     :
                     columns[m].isForeignEntity && record[columns[m].resourceKey] ? record[columns[m].resourceKey].name : record[columns[m].dataIndex]
@@ -313,6 +366,48 @@ const ShowEditCreateForm = (props)  => {
     const dynamicMultiParentColumns = columns.filter(col => col.dataType.type === inputTypes.dynamicMultiWithChildren);
     if (dynamicMultiParentColumns.length > 0) {
       return dynamicMultiParentColumns.map(col => {
+
+        if (record[col.childResourceConfig.resource].length === 0) return '';
+
+        return (
+          <Card size={"small"} style={{marginBottom: '5px'}} key={col.dataIndex}>
+            <Row>
+              <Col span={8} style={{fontSize: '18px', fontWeight: 'bold', color: '#00834E'}}>{col.resourceConfig.displayName}</Col>
+              <Col span={16} style={{textAlign: 'left', fontSize: '18px'}}>
+                {
+                  record[col.childResourceConfig.resource].map(item =>
+                    <Tag
+                      key={item.id}
+                      style={{
+                        color: '#007462',
+                        cursor: 'pointer',
+                        fontSize: '15px',
+                        paddingBottom: '3px',
+                        paddingTop: '3px',
+                        marginBottom: '5px'
+                      }}
+                    >
+                      {item.name}
+                    </Tag>
+                  )
+                }
+              </Col>
+            </Row>
+          </Card>
+        );
+      });
+    }
+  };
+
+  /*
+  const renderDynamicMultiParents = () => {
+    if (!record) {
+      return '';
+    }
+
+    const dynamicMultiParentColumns = columns.filter(col => col.dataType.type === inputTypes.dynamicMultiWithChildren);
+    if (dynamicMultiParentColumns.length > 0) {
+      return dynamicMultiParentColumns.map(col => {
         let items = [];
         if (props[col.primaryResourceConfig.resource]) {
           const primaryRecord = props[col.primaryResourceConfig.resource].find(item => item[col.primaryResourceConfig.primaryKeyName]
@@ -353,6 +448,7 @@ const ShowEditCreateForm = (props)  => {
       });
     }
   };
+  */
 
   const renderHasMany = () => {
     if (!record) {
@@ -364,8 +460,8 @@ const ShowEditCreateForm = (props)  => {
     }
 
     return resource.hasMany.map(field =>
-      <Card size={"small"} style={{marginBottom: '5px'}}>
-        <Row key={field}>
+      <Card key={field} size={"small"} style={{marginBottom: '5px'}}>
+        <Row>
           <Col span={8}
                style={{fontSize: '18px', fontWeight: 'bold', color: '#00834E'}}>{resources.find(r => r.resource === field).displayName}</Col>
           <Col span={16} style={{textAlign: 'left', fontSize: '18px'}}>
@@ -409,7 +505,16 @@ const ShowEditCreateForm = (props)  => {
       >
         <Form layout="vertical" style={{ overflow: 'auto' }} hideRequiredMark>
           {
-            action === actionTypes.show ? renderShowFields(finalColumns) : renderInputs(finalColumns).map(inputsRow => inputsRow)
+            action === actionTypes.show ? renderShowFields(finalColumns) : ''
+          }
+          {
+            action === actionTypes.edit && record && !record.parentId ?  renderInputs(finalColumns.filter(col => !col.notAccessibleToParent)).map(inputsRow => inputsRow) : ''
+          }
+          {
+            action === actionTypes.edit && record && record.parentId ?  renderInputs(finalColumns.filter(col => col)).map(inputsRow => inputsRow) : ''
+          }
+          {
+            action === actionTypes.create ?  renderInputs(finalColumns.filter(col => !col.notAccessibleToParent)).map(inputsRow => inputsRow) : ''
           }
           {
             action === actionTypes.show && columns.find(col => col.dataType.type === inputTypes.dynamicMultiWithChildren) ? renderDynamicMultiParents() : ''
@@ -418,7 +523,7 @@ const ShowEditCreateForm = (props)  => {
             action === actionTypes.show && resource.hasParent ? renderChildren() : ''
           }
           {
-            action === actionTypes.show && resource.hasMany && record && record.parentId ? renderHasMany() : ''
+            action === actionTypes.show && resource.hasMany && record ? renderHasMany() : ''
           }
           <Row>
             <Col span={24}>

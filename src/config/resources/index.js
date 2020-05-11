@@ -9,6 +9,9 @@ import product_categories from "./product_categories";
 import product_segment_entries from "./product_segment_entries";
 import product_segments from "./product_segments";
 import products from "./products";
+import measurement_units from "./measurement_units";
+import features from "./features";
+import subscriptions from "./subscriptions";
 
 export default [
   branches,
@@ -21,5 +24,8 @@ export default [
   product_categories,
   product_segment_entries,
   product_segments,
-  products
+  products,
+  measurement_units,
+  features,
+  subscriptions
 ];

@@ -1,8 +1,7 @@
 import axios from 'axios';
 import LocalInfo from "./LocalInfo";
 
-const apiUrl = 'https://elp-core-api-dev.herokuapp.com/v1/admin';
-const fakeApiUrl = 'http://elpfakeapi-env.unhavpij3f.us-east-2.elasticbeanstalk.com';
+const apiUrl = 'https://core-api-dev.mystoreaid.net/v1/admin';
 
 const requestMethods = {
   GET: 'GET',
@@ -39,7 +38,7 @@ class Api {
     }
 
     static get apiUrl() {
-        return apiUrl || fakeApiUrl;
+        return apiUrl;
     }
 
     _makeRequest(method, params, identifierValue) {

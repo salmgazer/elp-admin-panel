@@ -32,6 +32,19 @@ const columns = [
       type: inputTypes.multi,
     }
   },
+  {
+    title: 'Subscription',
+    dataIndex: 'subscriptionId',
+    isForeignEntity: true,
+    resourceKey: 'subscription',
+    resource: 'subscriptions',
+    cannotEdit: true,
+    required: false,
+    isTableColumn: true,
+    dataType: {
+      type: inputTypes.multi,
+    }
+  },
 ];
 
 export default columns;

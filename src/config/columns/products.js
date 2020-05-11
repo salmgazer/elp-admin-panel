@@ -20,7 +20,7 @@ const columns = [
     dataIndex: 'picture',
     required: false,
     isTableColumn: true,
-    render: () => <img  alt={''} style={{ width: '40px' }} src={imagePath} />,
+    render: () => <img  alt={''} style={{ width: '30px' }} src={imagePath} />,
     dataType: {
       type: inputTypes.picture,
     }
@@ -36,23 +36,38 @@ const columns = [
     }
   },
   {
-    title: 'Measurement Unit',
-    dataIndex: 'measurementUnit',
-    required: false,
-    dataType: {
-      type: inputTypes.string,
-    }
-  },
-  {
     title: 'Barcode',
     dataIndex: 'barCode',
     required: false,
+    isTableColumn: true,
     dataType: {
       type: inputTypes.string,
     }
   },
   {
-    title: 'Product Category',
+    title: 'Weight',
+    dataIndex: 'weight',
+    required: false,
+    isTableColumn: true,
+    dataType: {
+      type: inputTypes.number,
+    }
+  },
+  {
+    title: 'M. Unit',
+    dataIndex: 'measurementUnitId',
+    isForeignEntity: true,
+    resourceKey: 'measurementUnit',
+    resource: 'measurement_units',
+    required: false,
+    cannotEdit: true,
+    isTableColumn: true,
+    dataType: {
+      type: inputTypes.multi,
+    }
+  },
+  {
+    title: 'Category',
     dataIndex: 'productCategoryId',
     isForeignEntity: true,
     resourceKey: 'productCategory',
@@ -88,7 +103,7 @@ const columns = [
     }
   },
   {
-    title: 'Product Segments',
+    title: 'Segments',
     dataIndex: 'productSegmentIds',
     isForeignEntity: true,
     resourceKey: 'productSegment',

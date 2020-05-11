@@ -9,6 +9,7 @@ import resources from './config/resources';
 import Loading from "./components/Loading";
 import Login from "./screens/login/Login";
 import allColumns from "./config/columns";
+import BranchDetail from "./components/branchDetails/BranchDetail";
 
 function NoMatch() {
   return (
@@ -60,6 +61,14 @@ const App = () => {
               render={() => {
                 setTitle(`Login | ${appName}`);
                 return <Login />;
+              }}
+            />
+            <Route
+              exact
+              path={paths.branch_details}
+              render={() => {
+                setTitle(`Branch Details | ${appName}`);
+                return <BranchDetail/>;
               }}
             />
 

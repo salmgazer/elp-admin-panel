@@ -1,13 +1,12 @@
 export default {
-  resource: "branches",
+  resource: "measurement_units",
+  displayName: "Measurement Unit",
   primaryKeyName: "id",
-  displayName: "Branches",
   mainColumnName: "name",
-  useHashLink: true,
-  moveTo: 'details',
   isReady: true,
   isGeneric: true,
   canEdit: true,
+  canDelete: true,
   showCreatedAt: true,
   showUpdatedAt: true
 };

@@ -11,6 +11,9 @@ export default {
   users: [],
   clients: [],
   customers: [],
+  measurement_units: [],
+  features: [],
+  subscriptions: [],
   showing: {}
 };
 

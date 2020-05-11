@@ -39,8 +39,21 @@ const columns = [
     resource: 'product_segments',
     required: false,
     isTableColumn: true,
+    hasManyField: true,
     dataType: {
       type: inputTypes.multipleValues,
+    }
+  },
+  {
+    title: 'Measurement Unit',
+    dataIndex: 'measurementUnitId',
+    isForeignEntity: true,
+    resourceKey: 'measurementUnit',
+    resource: 'measurement_units',
+    required: false,
+    isTableColumn: true,
+    dataType: {
+      type: inputTypes.multi,
     }
   },
 ];

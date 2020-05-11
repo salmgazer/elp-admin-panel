@@ -9,6 +9,9 @@ import products from './products';
 import product_segments from './productSegments';
 import product_segment_entries from './productSegmentEntries';
 import customers from './customers';
+import measurement_units from "./measurement_units";
+import features from "./features";
+import subscriptions from "./subscriptions";
 
 
 const allColumns = {
@@ -22,7 +25,10 @@ const allColumns = {
   products,
   product_segments,
   product_segment_entries,
-  customers
+  customers,
+  measurement_units,
+  features,
+  subscriptions
 };
 
 

@@ -75,12 +75,15 @@ const NavBar = (props) => {
         className='nav-item'
         title={
           <span className="submenu-title-wrapper" style={{fontSize: '20px'}}>
-            Others
+            Admin
           </span>
         }
       >
         <Menu.Item key="business_category" className='nav-sub-item' onClick={() => routeTo(paths.business_categories)}>Business Categories</Menu.Item>
         <Menu.Item key="customers" className='nav-sub-item' onClick={() => routeTo(paths.customers)}>Customers</Menu.Item>
+        <Menu.Item key="measurement_units" className='nav-sub-item' onClick={() => routeTo(paths.measurement_units)}>Measurement Units</Menu.Item>
+        <Menu.Item key="app_features" className='nav-sub-item' onClick={() => routeTo(paths.features)}>App Features</Menu.Item>
+        <Menu.Item key="app_subscriptions" className='nav-sub-item' onClick={() => routeTo(paths.subscriptions)}>App Subscriptions</Menu.Item>
       </SubMenu>
       <SubMenu
         className='nav-item'
