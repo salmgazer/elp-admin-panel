@@ -1,10 +1,10 @@
+import pluralize from 'pluralize';
 import initialState from './initialState';
 import * as types from '../actions/actionTypes';
-import pluralize from 'pluralize';
 
 
 const reducer = (state = initialState, action) => {
-  const resource = action.resource;
+  const {resource} = action;
   if (action.type.indexOf('@@') !== -1) {
     return state;
   }

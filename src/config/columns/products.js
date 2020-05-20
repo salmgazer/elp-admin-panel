@@ -74,6 +74,7 @@ const columns = [
     resource: 'product_categories',
     required: false,
     isTableColumn: true,
+    showChildrenOnly: true,
     dataType: {
       type: inputTypes.multi,
     }

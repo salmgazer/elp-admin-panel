@@ -12,6 +12,9 @@ import customers from './customers';
 import measurement_units from "./measurement_units";
 import features from "./features";
 import subscriptions from "./subscriptions";
+import roles from "./roles";
+import permissions from "./permissions";
+import cools from "./cools";
 
 
 const allColumns = {
@@ -28,7 +31,10 @@ const allColumns = {
   customers,
   measurement_units,
   features,
-  subscriptions
+  subscriptions,
+  roles,
+  permissions,
+  cools
 };
 
 

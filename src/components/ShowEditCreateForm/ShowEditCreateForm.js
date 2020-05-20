@@ -1,12 +1,12 @@
-import './ShowEditCreateForm.scss';
-import React, {useEffect} from 'react';
-import {Drawer, Form, Button, Col, Row, Input, Select, Card, Tag, Tabs, InputNumber, DatePicker} from 'antd';
 import capitalize from 'capitalize';
 import pluralize from 'pluralize';
+import React, {useEffect} from 'react';
+import { connect } from 'react-redux';
+import {Drawer, Form, Button, Col, Row, Input, Select, Card, Tag, Tabs, InputNumber, DatePicker} from 'antd';
+import './ShowEditCreateForm.scss';
 import inputTypes from '../../config/inputTypes';
 import actionTypes from '../../config/actionTypes';
 import resources from '../../config/resources';
-import { connect } from 'react-redux';
 import actions from "../../state/actions";
 import mapStateToProps from '../common/mapStateToProps';
 
@@ -57,8 +57,7 @@ const ShowEditCreateForm = (props)  => {
    * @param column
    * @returns {*}
    */
-  const stringInput = (column) => {
-    return <Col span={isMobile ? 24 : 12}>
+  const stringInput = (column) => <Col span={isMobile ? 24 : 12}>
       <Form.Item
         name={column.dataIndex}
         label={column.title}
@@ -72,15 +71,13 @@ const ShowEditCreateForm = (props)  => {
                  placeholder={`Please enter ${resourceDisplayName} ${column.title}`} />
         )}
       </Form.Item>
-    </Col>
-  };
+    </Col>;
 
   /**
    * @param column
    * @returns {*}
    */
-  const numberInput = (column) => {
-    return <Col span={isMobile ? 24 : 12}>
+  const numberInput = (column) => <Col span={isMobile ? 24 : 12}>
       <Form.Item
         name={column.dataIndex}
         label={column.title}
@@ -93,16 +90,14 @@ const ShowEditCreateForm = (props)  => {
           <InputNumber min={0} style={{ width: '300px'}}  disabled={column.dataType.primaryKey === true && !column.userBasedPrimaryKey} placeholder={`${column.title} of ${pluralize.singular(resourceDisplayName)}`} />
         )}
       </Form.Item>
-    </Col>
-  };
+    </Col>;
 
 
   /**
    * @param column
    * @returns {*}
    */
-  const dateInput = (column) => {
-    return <Col span={isMobile ? 24 : 12}>
+  const dateInput = (column) => <Col span={isMobile ? 24 : 12}>
       <Form.Item
         name={column.dataIndex}
         label={column.title}
@@ -117,8 +112,7 @@ const ShowEditCreateForm = (props)  => {
           />
         )}
       </Form.Item>
-    </Col>
-  };
+    </Col>;
 
   /**
    * @param column
@@ -167,7 +161,7 @@ const ShowEditCreateForm = (props)  => {
             }
           >
             {
-              (column.dataType.values || (column.dataIndex === 'parentId' ? values.filter(val => !val.parentId && (record ? val.id !== record.id : true)) : values)).map(value =>
+              (column.dataType.values || (column.dataIndex === 'parentId' ? values.filter(val => !val.parentId && (record ? val.id !== record.id : true)) : column.showChildrenOnly ? values.filter(val => val.parentId)  : values)).map(value =>
                 <Option
                   key={typeof value === 'string' ? value : value.id}
                   value={typeof value === 'string' ? value : value.id}>
@@ -494,7 +488,7 @@ const ShowEditCreateForm = (props)  => {
   };
 
   return (
-    <div>
+    <div className="drawer">
       <Drawer
         title={`${capitalize(action || '')} ${resourceDisplayName}`}
         width={ isMobile ? 400 : 720}
@@ -534,21 +528,25 @@ const ShowEditCreateForm = (props)  => {
                     const formFields = finalColumns.map(column => column.dataIndex);
                     if (resourceName === 'products') {
                       // rethink and make this generic
-                      const productCategory = props['product_categories'].find(pc => pc.id === record.productCategoryId);
-                      productCategory.product_segments.forEach(item => {
-                        formFields.push(item.name);
-                      });
+                      const productCategory = props.product_categories.find(pc => pc.id === record.productCategoryId);
+                      if (productCategory && productCategory.product_segments) {
+                        productCategory.product_segments.forEach(item => {
+                          formFields.push(item.name);
+                        });
+                      }
                     }
                     const updatedRowObject = props.form.getFieldsValue(formFields);
 
                     // merge segments into productSegmentEntriesId
                     if (resourceName === 'products') {
                       const productSegmentEntryIds = [];
-                      const productCategory = props['product_categories'].find(pc => pc.id === record.productCategoryId);
-                      productCategory.product_segments.forEach(item => {
-                        productSegmentEntryIds.push(updatedRowObject[item.name]);
-                        delete updatedRowObject[item.name];
-                      });
+                      const productCategory = props.product_categories.find(pc => pc.id === record.productCategoryId);
+                      if (productCategory && productCategory.product_segments) {
+                        productCategory.product_segments.forEach(item => {
+                          productSegmentEntryIds.push(updatedRowObject[item.name]);
+                          delete updatedRowObject[item.name];
+                        });
+                      }
                       updatedRowObject.productSegmentEntryIds = productSegmentEntryIds;
                     }
                     delete updatedRowObject.productSegmentIds;

@@ -44,7 +44,7 @@ class Api {
     _makeRequest(method, params, identifierValue) {
       const headers = {'Authorization': `Bearer ${LocalInfo.userToken}`};
       if (this.contentType) {
-        headers['accept'] = this.contentType;
+        headers.accept = this.contentType;
       }
       const requestConfig = {
         method,

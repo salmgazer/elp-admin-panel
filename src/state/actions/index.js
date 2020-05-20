@@ -1,17 +1,17 @@
-import * as actionTypes from './actionTypes';
 import pluralize from 'pluralize';
-import Api from '../../services/Api';
 import {message} from 'antd';
+import * as actionTypes from './actionTypes';
+import Api from '../../services/Api';
+
 
 const alertTypes = {
   SUCCESS: "SUCCESS",
   FAIL: "FAIL",
 };
 
-const singular = pluralize.singular;
+const {singular} = pluralize;
 
-const index = (resourceConfig, parentResources = {}, options = {}) => {
-  return async dispatch => {
+const index = (resourceConfig, parentResources = {}, options = {}) => async dispatch => {
     try {
       const results = await new Api(resourceConfig, parentResources, options).index();
       if (results) {
@@ -30,10 +30,8 @@ const index = (resourceConfig, parentResources = {}, options = {}) => {
       alert('feedback', alertTypes.FAIL, err);
     }
   };
-};
 
-const createOne = (params, resourceConfig, parentResources = {}, options = {}) => {
-  return async (dispatch) => {
+const createOne = (params, resourceConfig, parentResources = {}, options = {}) => async (dispatch) => {
     try {
       const result = await new Api(resourceConfig, parentResources, options).create(params);
       if (result) {
@@ -54,10 +52,8 @@ const createOne = (params, resourceConfig, parentResources = {}, options = {}) =
       alert('feedback', alertTypes.FAIL, err);
     }
   };
-};
 
-const updateOne = (identifierValue, params, resourceConfig, parentResources = {}, options = {}) => {
-  return async (dispatch) => {
+const updateOne = (identifierValue, params, resourceConfig, parentResources = {}, options = {}) => async (dispatch) => {
     try {
       const result = await new Api(resourceConfig, parentResources, options).update(identifierValue, params);
       if (result) {
@@ -80,18 +76,16 @@ const updateOne = (identifierValue, params, resourceConfig, parentResources = {}
       alert('feedback', alertTypes.FAIL, err);
     }
   };
-};
 
 
-const deleteOne = (identifierValue, resourceConfig, parentResources = {}, options = {}) => {
-  return async (dispatch) => {
+const deleteOne = (identifierValue, resourceConfig, parentResources = {}, options = {}) => async (dispatch) => {
     try {
       const result = await new Api(resourceConfig, parentResources, options).delete(identifierValue);
       if (result) {
         message.success(`Successfully deleted ${resourceConfig.resource}`);
         dispatch({
           type: actionTypes[`DELETE_ONE_${singular(resourceConfig.resource).toUpperCase()}_SUCCESS`],
-          identifierValue: identifierValue,
+          identifierValue,
           resource: resourceConfig.resource,
           primaryKeyName: resourceConfig.primaryKeyName
         });
@@ -106,25 +100,21 @@ const deleteOne = (identifierValue, resourceConfig, parentResources = {}, option
       alert('feedback', alertTypes.FAIL, err);
     }
   };
-};
 
-const alert = (entity, alertType, message) => {
-  return async dispatch => {
+const alert = (entity, alertType, message) => async dispatch => {
     try {
       dispatch({
         type: 'ALERT',
-        alertType: alertType,
+        alertType,
         message,
         entity
       });
     } catch (err) {
       console.error(err);
     }
-  }
-};
+  };
 
-const clearAlert = (entity) => {
-  return async dispatch => {
+const clearAlert = (entity) => async dispatch => {
     try {
       dispatch({
         type: 'CLEAR_ALERT',
@@ -133,8 +123,7 @@ const clearAlert = (entity) => {
     } catch (err) {
       console.error(err);
     }
-  }
-};
+  };
 
 
 

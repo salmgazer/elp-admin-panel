@@ -1,7 +1,7 @@
 import React from 'react';
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import paths from "./utilities/paths";
 import './App.scss';
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { useAuth0 } from "./react-auth0-spa";
 import NavBar from './components/navbar/NavBar';
 import GenericTable from './components/GenericTable/GenericTable';
@@ -10,6 +10,8 @@ import Loading from "./components/Loading";
 import Login from "./screens/login/Login";
 import allColumns from "./config/columns";
 import BranchDetail from "./components/branchDetails/BranchDetail";
+
+const {appName} = require('../package.json');
 
 function NoMatch() {
   return (
@@ -22,7 +24,7 @@ function NoMatch() {
 }
 
 
-function setPageBackground(backgroundColor = "rgb(242, 236, 227)") {
+function setPageBackground(backgroundColor = "red") {
   document.body.style.backgroundImage = "none";
   document.body.style.backgroundColor = backgroundColor;
 }
@@ -37,8 +39,6 @@ const App = () => {
   const setTitle = (title) => {
     document.title = title;
   };
-
-  const appName = require('../package.json').appName;
 
   return (
     <div className="App">
@@ -80,6 +80,7 @@ const App = () => {
                   path={paths[resourceName]}
                   render={() => {
                     setTitle(`${ resource.displayName || resourceName} | ${appName}`);
+                    setPageBackground("whitesmoke");
                     return <GenericTable resource={resource} columns={allColumns[resourceName]} />;
                   }}
                 />

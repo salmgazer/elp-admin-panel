@@ -1,6 +1,6 @@
 export default {
-  resource: "brands", // table name
-  displayName: "Brands",
+  resource: "cools", // table name
+  displayName: "Cool",
   primaryKeyName: "id",
   mainColumnName: "name",
   isReady: true,

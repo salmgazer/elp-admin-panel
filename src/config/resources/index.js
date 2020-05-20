@@ -12,6 +12,9 @@ import products from "./products";
 import measurement_units from "./measurement_units";
 import features from "./features";
 import subscriptions from "./subscriptions";
+import roles from "./roles";
+import permissions from "./permissions";
+import cools from "./cools";
 
 export default [
   branches,
@@ -27,5 +30,8 @@ export default [
   products,
   measurement_units,
   features,
-  subscriptions
+  subscriptions,
+  roles,
+  permissions,
+  cools
 ];

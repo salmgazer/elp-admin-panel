@@ -14,11 +14,8 @@ export default {
   measurement_units: [],
   features: [],
   subscriptions: [],
+  roles: [],
+  permissions: [],
+  cools: [],
   showing: {}
 };
-
-// showing: {
-//    resource: string
-//    data: {
-//    }
-//}

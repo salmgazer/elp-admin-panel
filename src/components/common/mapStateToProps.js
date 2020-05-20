@@ -14,7 +14,10 @@ export default function mapStateToProps(state) {
       customers,
       measurement_units,
       features,
-      subscriptions
+      subscriptions,
+      roles,
+      permissions,
+      cools
     } = state;
 
     return {
@@ -32,6 +35,9 @@ export default function mapStateToProps(state) {
       customers,
       measurement_units,
       features,
-      subscriptions
+      subscriptions,
+      roles,
+      permissions,
+      cools
     };
 }

@@ -14,5 +14,8 @@ export default {
     customers: "/customers",
     measurement_units: "/measurement_unit",
     features: "/features",
-    subscriptions: "/subscription"
+    subscriptions: "/subscription",
+    roles: "/roles",
+    permissions: "/permissions",
+    cools: "/cools"
 };

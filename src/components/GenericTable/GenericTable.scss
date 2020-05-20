@@ -7,9 +7,10 @@
 
 .btn-appearance {
   background-color: white;
-  border-color: #007462;
+  border: none;
   font-weight: normal;
   color: #007462;
+  box-shadow: 0 2px 4px 0 grey;
   &:hover {
     color: white;
     background-color: #007462;
@@ -22,7 +23,6 @@
   color: #AE735D !important;
   text-align: left;
   margin-left: 50px;
-  margin-bottom: -20px;
 }
 
 .table-title-mobile {
@@ -42,21 +42,27 @@
   margin-left: 2px;
   margin-top: -20px;
   margin-bottom: 20px;
+  box-shadow: 0 1px 2px 0 grey;
+  border-color: grey;
+  &:active {
+    border-color: darkgrey;
+  }
   input {
     &:hover {
       border-color: darkgrey !important;
-      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      box-shadow: 0 2px 4px 0 darkgrey;
     }
   }
 }
 
 .title-row {
-  margin-top: -20px;
+  margin-top: -30px;
+  padding-top: 20px;
+  background-color: white;
 }
 
 thead {
   &.ant-table-thead {
-    background-color: white !important;
     span {
       font-size: 18px;
       color: #86610C;
@@ -145,6 +151,7 @@ tbody {
 
 .table-area {
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+  background-color: white;
   border-radius: 10px;
   margin-bottom: 50px;
   padding: 20px;

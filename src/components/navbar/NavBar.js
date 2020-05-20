@@ -58,6 +58,7 @@ const NavBar = (props) => {
         Accounts
       </Menu.Item>
       <Menu.Item key="products" style={{fontSize: '20px'}} onClick={() => routeTo(paths.products)} className='nav-item'>Products</Menu.Item>
+      <Menu.Item key="cools" style={{fontSize: '20px'}} onClick={() => routeTo(paths.cools)} className='nav-item'>Cools</Menu.Item>
       <SubMenu
         className='nav-item'
         title={
@@ -82,8 +83,8 @@ const NavBar = (props) => {
         <Menu.Item key="business_category" className='nav-sub-item' onClick={() => routeTo(paths.business_categories)}>Business Categories</Menu.Item>
         <Menu.Item key="customers" className='nav-sub-item' onClick={() => routeTo(paths.customers)}>Customers</Menu.Item>
         <Menu.Item key="measurement_units" className='nav-sub-item' onClick={() => routeTo(paths.measurement_units)}>Measurement Units</Menu.Item>
-        <Menu.Item key="app_features" className='nav-sub-item' onClick={() => routeTo(paths.features)}>App Features</Menu.Item>
-        <Menu.Item key="app_subscriptions" className='nav-sub-item' onClick={() => routeTo(paths.subscriptions)}>App Subscriptions</Menu.Item>
+        <Menu.Item key="app_subscriptions" className='nav-sub-item' onClick={() => routeTo(paths.subscriptions)}>App Features and Subscriptions</Menu.Item>
+        <Menu.Item key="app_roles" className='nav-sub-item' onClick={() => routeTo(paths.roles)}>App Roles and Permissions</Menu.Item>
       </SubMenu>
       <SubMenu
         className='nav-item'

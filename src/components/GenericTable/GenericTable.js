@@ -318,7 +318,7 @@ class GenericTable extends React.Component {
     const {columns, resource, dispatch, history} = this.props;
     const resourceName = resource.resource;
     const resourceDisplayName = resource.displayName || resourceName;
-    let updatedColumns = Object.assign([], columns);
+    const updatedColumns = Object.assign([], columns);
     const mainColumn = updatedColumns.find(column => column.mainColumn === true);
     const parentColumn =  updatedColumns.find(column => column.dataIndex === 'parentId');
 
@@ -780,6 +780,9 @@ class GenericTable extends React.Component {
                   columns={updatedColumns.filter(col => col.isTableColumn)}
                   rowClassName="editable-row"
                   rowKey={resource.primaryKeyName}
+                  style={{
+                    backgroundColor: "white"
+                  }}
                   pagination={{
                     position: "bottom",
                     hideOnSinglePage: true,
@@ -788,8 +791,7 @@ class GenericTable extends React.Component {
                     showSizeChanger: true,
                     showLessItems: true,
                   }}
-                  onRow={(record, rowIndex) => {
-                    return {
+                  onRow={(record, rowIndex) => ({
                       onClick: event => {}, // click row
                       onDoubleClick: event => {
                         this.routeOrShowRender(resource, record);
@@ -797,8 +799,7 @@ class GenericTable extends React.Component {
                       onContextMenu: event => {}, // right button click row
                       onMouseEnter: event => {}, // mouse enter row
                       onMouseLeave: event => {}, // mouse leave row
-                    };
-                  }}
+                    })}
                   size={"small"}
                 />
               </div>
