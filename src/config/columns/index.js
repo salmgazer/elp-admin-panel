@@ -14,7 +14,7 @@ import features from "./features";
 import subscriptions from "./subscriptions";
 import roles from "./roles";
 import permissions from "./permissions";
-import cools from "./cools";
+import sales from "./sales";
 
 
 const allColumns = {
@@ -34,7 +34,7 @@ const allColumns = {
   subscriptions,
   roles,
   permissions,
-  cools
+  sales
 };
 
 

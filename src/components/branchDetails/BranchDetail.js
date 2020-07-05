@@ -16,7 +16,13 @@ import resource from "../../config/resources/branches";
 import productsResource from "../../config/resources/products";
 import productColumns from "../../config/columns/products";
 import customerColumns from "../../config/columns/customers";
+import salesColumns from "../../config/columns/sales";
+import usersColumns from "../../config/columns/users";
+import productStocksColumns from "../../config/columns/productStocks";
 import customerResource from "../../config/resources/customers";
+import salesResource from "../../config/resources/sales";
+import usersResource from "../../config/resources/users";
+import productStocksResource from "../../config/resources/productStocks";
 import allResources from "../../config/resources"
 import Api from "../../services/Api";
 import GenericTable from "../GenericTable/GenericTable";
@@ -49,28 +55,45 @@ class BranchDetail extends React.Component {
       openCreateOrEditForm: false,
       searchValue: '',
       formAction: '',
-      branchDetails: {},
+      branchDetails: null,
+      products: null,
+      customers: null,
+      sales: null,
+      employees: null,
+      product_stocks: null,
       routes: []
     }
   }
 
   componentDidMount() {
-    const branchDetailUrl = `${window.location.hash.replace("#", '')}`;
-    new Api(resource, {}, {url: branchDetailUrl}).index()
-      .then(branchDetails => {
-        console.log(branchDetails);
-        this.setState({branchDetails : branchDetails.data});
-      });
+    const branchDetailUrl = `${window.location.hash.replace("#", '').replace('/details', '')}`;
+    const branchUrlComponents = branchDetailUrl.split('/');
+    if (!this.state.branchDetails) {
+      new Api(resource, {}, {url: branchDetailUrl}).findOne(branchUrlComponents[branchUrlComponents.length - 1])
+        .then(branchDetails => {
+          this.setState({branchDetails: branchDetails.data});
+        });
+    }
+  }
+
+  async loadData(resourceName) {
+    if (resourceName !== 'branch') {
+      const url = `${window.location.hash.replace("#", '').replace('details', resourceName)}`;
+      const resourceResponse = await new Api(resource, {}, {url}).index();
+      const newState = {};
+      newState[resourceName] = resourceResponse.data[resourceName];
+      this.setState(newState);
+    }
   }
 
   render() {
-    const {branchDetails} = this.state;
+    const {branchDetails, products, customers, sales, employees, product_stocks} = this.state;
     return (
       <div>
         <Row className="title-row">
           <Col className="gutter-row" span={6}>
             <Title className={isMobile ? 'table-title-mobile' : 'table-title'}>
-              Branch
+              Branch: <b style={{color: 'black'}}>{ branchDetails ? branchDetails.name : '' }</b>
             </Title>
           </Col>
         </Row>
@@ -121,15 +144,30 @@ class BranchDetail extends React.Component {
               }
             </Row>
         </div>
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="Branch Details" key="1">
+        <Tabs defaultActiveKey="1" onTabClick={async(key, event) => await this.loadData(key)}>
+          <TabPane tab="Branch Details" key="branch">
             {
-              branchDetails.name ?
+              branchDetails ?
                 <div>
                   <Card
                     hoverable
-                    style={{ width: 400, margin: '0 auto' }}
+                    style={{ width: 600, margin: '0 auto' }}
                   >
+                    <Row gutter={16} style={{marginBottom: '20px'}}>
+                      <Col span={8}><b>ID</b></Col>
+                      <Col span={16}>
+                        <Tag
+                          style={{
+                            color: '#007462',
+                            cursor: 'pointer',
+                            fontSize: '15px',
+                            paddingBottom: '3px',
+                            paddingTop: '3px',
+                          }}>
+                          {branchDetails.id}
+                        </Tag>
+                      </Col>
+                    </Row>
                     <Row gutter={16} style={{marginBottom: '20px'}}>
                       <Col span={8}><b>Name</b></Col>
                       <Col span={16}>
@@ -255,18 +293,43 @@ class BranchDetail extends React.Component {
                 : <Skeleton active />
             }
           </TabPane>
-          <TabPane tab="Products" key="2">
+          <TabPane tab="Products" key="products">
             {
-              branchDetails.products ?
-                <GenericTable resource={productsResource} columns={productColumns} values={branchDetails.products} />
+              products ?
+                <GenericTable resource={productsResource} columns={productColumns} values={products || []} />
               : <Spin size="large" />
             }
           </TabPane>
-          <TabPane tab="Customers" key="3">
+          <TabPane tab="Stocks" key="product_stocks">
             {
-              branchDetails.customers ?
-                <GenericTable resource={customerResource} columns={customerColumns} values={branchDetails.customers} />
+              product_stocks ?
+                <GenericTable resource={productStocksResource} columns={productStocksColumns} values={product_stocks || []} />
+                : <Spin size="large" />
+            }
+          </TabPane>
+          <TabPane tab="Customers" key="customers">
+            {
+              customers ?
+                <GenericTable resource={customerResource} columns={customerColumns} values={customers || []} />
               : <Spin size="large" />
+            }
+          </TabPane>
+          <TabPane tab="Sales" key="sales">
+            {
+              sales ?
+                <GenericTable
+                  resource={salesResource}
+                  columns={salesColumns}
+                  values={sales || []}
+                />
+                : <Spin size="large" />
+            }
+          </TabPane>
+          <TabPane tab="Employees" key="employees">
+            {
+              employees ?
+                <GenericTable resource={usersResource} columns={usersColumns} values={employees || []} />
+                : <Spin size="large" />
             }
           </TabPane>
         </Tabs>

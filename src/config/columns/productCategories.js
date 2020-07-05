@@ -23,7 +23,7 @@ const columns = [
   {
     title: 'Parent',
     dataIndex: 'parentId',
-    required: true,
+    required: false,
     isTableColumn: true,
     showParentsOnly: true,
     dataType: {

@@ -1,7 +1,11 @@
 import axios from 'axios';
 import LocalInfo from "./LocalInfo";
-
-const apiUrl = 'https://core-api-dev.mystoreaid.net/v1/admin';
+const apis = require('../config/apis.json');
+const envs = require('../config/environments.json');
+const NODE_ENV = envs.NODE_ENV;
+const apiConf = apis["elp-core-api"][NODE_ENV].v1;
+const {basePath, protocol, prefix} = apiConf;
+const apiUrl = `${protocol}://${basePath}/v1/${prefix}`;
 
 const requestMethods = {
   GET: 'GET',

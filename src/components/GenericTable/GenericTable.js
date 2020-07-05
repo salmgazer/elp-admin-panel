@@ -166,7 +166,6 @@ class GenericTable extends React.Component {
   componentDidMount() {
     // const {routes} = this.state;
     const {values} = this.props;
-    console.log(values);
     if (!values) {
       if (this.props.location.state && this.props.location.state.routes) {
         this.setState({
@@ -324,7 +323,7 @@ class GenericTable extends React.Component {
 
     if (parentColumn && this.props[resourceName]) {
       parentColumn.render = (text, record) => {
-        if (record.parentId) {
+        if (record.parentId && record.parent) {
 
           return <Col
             onClick={() => {
@@ -457,7 +456,7 @@ class GenericTable extends React.Component {
         dataIndex: 'created_at',
         isTableColumn: true,
         required: true,
-        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1000).toDateString().split('GMT')[0]}</i>,
+        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1).toDateString().split('GMT')[0]}</i>,
         dataType: {
           type: inputTypes.date,
         }});
@@ -469,7 +468,7 @@ class GenericTable extends React.Component {
         dataIndex: 'updated_at',
         isTableColumn: true,
         required: true,
-        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1000).toDateString().split('GMT')[0]}</i>,
+        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1).toDateString().split('GMT')[0]}</i>,
         dataType: {
           type: inputTypes.date,
         }});

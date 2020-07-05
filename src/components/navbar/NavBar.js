@@ -58,7 +58,6 @@ const NavBar = (props) => {
         Accounts
       </Menu.Item>
       <Menu.Item key="products" style={{fontSize: '20px'}} onClick={() => routeTo(paths.products)} className='nav-item'>Products</Menu.Item>
-      <Menu.Item key="cools" style={{fontSize: '20px'}} onClick={() => routeTo(paths.cools)} className='nav-item'>Cools</Menu.Item>
       <SubMenu
         className='nav-item'
         title={

@@ -1,0 +1,25 @@
+{
+  "elp-core-api" : {
+    "development": {
+      "v1": {
+        "basePath" : "core-api-dev.mystoreaid.net",
+        "protocol" : "https",
+        "prefix" : "admin"
+      }
+    },
+    "qa": {
+      "v1": {
+        "basePath" : "core-api-qa.mystoreaid.net",
+        "protocol" : "https",
+        "prefix" : "admin"
+      }
+    },
+    "production": {
+      "v1": {
+        "basePath" : "core-api.mystoreaid.net",
+        "protocol" : "https",
+        "prefix" : "admin"
+      }
+    }
+  }
+}

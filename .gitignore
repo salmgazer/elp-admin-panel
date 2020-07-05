@@ -23,3 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea/
+
+src/config/environments.json
+src/config/environments_development.json
+src/config/environments_production.json
+src/config/environments_qa.json
