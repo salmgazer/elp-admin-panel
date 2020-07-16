@@ -4,7 +4,7 @@ import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
 import {Drawer, Form, Button, Col, Row, Input, Select, Card, Tag, Tabs, InputNumber, DatePicker} from 'antd';
 import './ShowEditCreateForm.scss';
-import inputTypes from '../../config/inputTypes';
+import inputTypes, { string } from '../../config/inputTypes';
 import actionTypes from '../../config/actionTypes';
 import resources from '../../config/resources';
 import actions from "../../state/actions";
@@ -550,6 +550,9 @@ const ShowEditCreateForm = (props)  => {
                       updatedRowObject.productSegmentEntryIds = productSegmentEntryIds;
                     }
                     // delete updatedRowObject.productSegmentIds;
+                    if (updatedRowObject.productSegmentEntryIds) {
+                      updatedRowObject.productSegmentEntryIds = updatedRowObject.productSegmentEntryIds.filter(psei => typeof psei === 'string');
+                    }
 
                     removeNulls(updatedRowObject);
                     if (action === actionTypes.edit) {
