@@ -108,7 +108,7 @@ class Api {
       }
 
       if (this.limit) {
-        fullUrl = `${fullUrl}offset=${this.offset}`;
+        fullUrl = `${fullUrl}limit=${this.limit}`;
       }
 
       if (this.searchConfig) {

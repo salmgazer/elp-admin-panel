@@ -526,7 +526,7 @@ const ShowEditCreateForm = (props)  => {
                   <Button id={'save-btn'} block onClick={async () => {
                     await props.form.validateFields();
                     const formFields = finalColumns.map(column => column.dataIndex);
-                    if (resourceName === 'products') {
+                    if (resourceName === 'products' && action === actionTypes.edit) {
                       // rethink and make this generic
                       const productCategory = props.product_categories.find(pc => pc.id === record.productCategoryId);
                       if (productCategory && productCategory.product_segments) {
@@ -537,8 +537,8 @@ const ShowEditCreateForm = (props)  => {
                     }
                     const updatedRowObject = props.form.getFieldsValue(formFields);
 
-                    // merge segments into productSegmentEntriesId
-                    if (resourceName === 'products') {
+                    // merge segments into productSegmentEntryIds
+                    if (resourceName === 'products' && action === actionTypes.edit) {
                       const productSegmentEntryIds = [];
                       const productCategory = props.product_categories.find(pc => pc.id === record.productCategoryId);
                       if (productCategory && productCategory.product_segments) {
@@ -549,7 +549,7 @@ const ShowEditCreateForm = (props)  => {
                       }
                       updatedRowObject.productSegmentEntryIds = productSegmentEntryIds;
                     }
-                    delete updatedRowObject.productSegmentIds;
+                    // delete updatedRowObject.productSegmentIds;
 
                     removeNulls(updatedRowObject);
                     if (action === actionTypes.edit) {
