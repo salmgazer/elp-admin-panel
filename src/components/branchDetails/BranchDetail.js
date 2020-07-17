@@ -33,6 +33,7 @@ import allResources from "../../config/resources";
 import Api from "../../services/Api";
 import GenericTable from "../GenericTable/GenericTable";
 import BreadCrumbItem from '../BreadCrumbItem/BreadCrumbItem';
+import BranchInfo from "./BranchInfo";
 
 const { Panel } = Collapse;
 const {Title} = Typography;
@@ -188,148 +189,7 @@ class BranchDetail extends React.Component {
           <TabPane tab="Branch Details" key="branch">
             {
               branchDetails ?
-                <div>
-                  <Card
-                    hoverable
-                    style={{ width: 600, margin: '0 auto' }}
-                  >
-                    <Row gutter={16} style={{marginBottom: '20px'}}>
-                      <Col span={8}><b>ID</b></Col>
-                      <Col span={16}>
-                        <Tag
-                          style={{
-                            color: '#007462',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                            paddingBottom: '3px',
-                            paddingTop: '3px',
-                          }}>
-                          {branchDetails.id}
-                        </Tag>
-                      </Col>
-                    </Row>
-                    <Row gutter={16} style={{marginBottom: '20px'}}>
-                      <Col span={8}><b>Name</b></Col>
-                      <Col span={16}>
-                        <Tag
-                          style={{
-                            color: '#007462',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                            paddingBottom: '3px',
-                            paddingTop: '3px',
-                          }}>
-                          {branchDetails.name}
-                        </Tag>
-                      </Col>
-                    </Row>
-                    <Row gutter={16} style={{marginBottom: '20px'}}>
-                      <Col span={8}><b>Location</b></Col>
-                      <Col span={16}>
-                        <Tag
-                          style={{
-                            color: '#007462',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                            paddingBottom: '3px',
-                            paddingTop: '3px',
-                          }}>
-                          {branchDetails.location}
-                        </Tag>
-                      </Col>
-                    </Row>
-                    <Row gutter={16} style={{marginBottom: '20px'}}>
-                      <Col span={8}><b>GPS</b></Col>
-                      <Col span={16}>
-                        <Tag
-                          style={{
-                            color: '#007462',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                            paddingBottom: '3px',
-                            paddingTop: '3px',
-                          }}>
-                          {branchDetails.gps}
-                        </Tag>
-                      </Col>
-                    </Row>
-                    <Row gutter={16} style={{marginBottom: '20px'}}>
-                      <Col span={8}><b>Phone</b></Col>
-                      <Col span={16}>
-                        <Tag
-                          style={{
-                            color: '#007462',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                            paddingBottom: '3px',
-                            paddingTop: '3px',
-                          }}>
-                          {branchDetails.phone}
-                        </Tag>
-                      </Col>
-                    </Row>
-                    <Row gutter={16} style={{marginBottom: '20px'}}>
-                      <Col span={8}><b>WhatsApp Phone</b></Col>
-                      <Col span={16}>
-                        <Tag
-                          style={{
-                            color: '#007462',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                            paddingBottom: '3px',
-                            paddingTop: '3px',
-                          }}>
-                          {branchDetails.phone}
-                        </Tag>
-                      </Col>
-                    </Row>
-                    <Row gutter={16}  style={{marginBottom: '20px'}}>
-                      <Col span={8}><b>Business Type</b></Col>
-                      <Col span={16}>
-                        <Tag
-                          style={{
-                            color: '#007462',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                            paddingBottom: '3px',
-                            paddingTop: '3px',
-                          }}>
-                          {branchDetails.type}
-                        </Tag>
-                      </Col>
-                    </Row>
-                    <Row gutter={16} style={{marginBottom: '20px'}}>
-                      <Col span={8}><b>Created At</b></Col>
-                      <Col span={16}>
-                        <Tag
-                          style={{
-                            color: '#007462',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                            paddingBottom: '3px',
-                            paddingTop: '3px',
-                          }}>
-                          {new Date(branchDetails.created_at * 1000).toDateString().split('GMT')[0]}
-                        </Tag>
-                      </Col>
-                    </Row>
-                    <Row gutter={16} style={{marginBottom: '20px'}}>
-                      <Col span={8}><b>Updated At</b></Col>
-                      <Col span={16}>
-                        <Tag
-                          style={{
-                            color: '#007462',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                            paddingBottom: '3px',
-                            paddingTop: '3px',
-                          }}>
-                          {new Date(branchDetails.updated_at * 1000).toDateString().split('GMT')[0]}
-                        </Tag>
-                      </Col>
-                    </Row>
-                  </Card>
-                </div>
+                <BranchInfo  branchDetails={branchDetails}/>
                 : <Skeleton active />
             }
           </TabPane>

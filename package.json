@@ -1,6 +1,6 @@
 {
   "name": "adminpanel",
-  "appName": "El-Parah Admin Panel",
+  "appName": "MyStoreAid Admin Panel",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
