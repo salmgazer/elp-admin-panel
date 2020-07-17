@@ -26,7 +26,7 @@ const columns = [
     dataIndex: 'startDate',
     isTableColumn: true,
     required: true,
-    render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1).toDateString().split('GMT')[0]}</i>,
+    render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text).toDateString().split('GMT')[0]}</i>,
     dataType: {
       type: inputTypes.date,
     }

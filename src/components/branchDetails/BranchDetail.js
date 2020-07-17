@@ -19,13 +19,20 @@ import customerColumns from "../../config/columns/customers";
 import salesColumns from "../../config/columns/sales";
 import usersColumns from "../../config/columns/users";
 import productStocksColumns from "../../config/columns/productStocks";
+import purchasesColumns from "../../config/columns/purchases";
+import companyColumns from "../../config/columns/companies";
+import branchColumns from "../../config/columns/branches";
 import customerResource from "../../config/resources/customers";
 import salesResource from "../../config/resources/sales";
 import usersResource from "../../config/resources/users";
 import productStocksResource from "../../config/resources/productStocks";
-import allResources from "../../config/resources"
+import purchasesResource from "../../config/resources/purchases";
+import branchResource from "../../config/resources/branches";
+import companyResource from "../../config/resources/companies";
+import allResources from "../../config/resources";
 import Api from "../../services/Api";
 import GenericTable from "../GenericTable/GenericTable";
+import BreadCrumbItem from '../BreadCrumbItem/BreadCrumbItem';
 
 const { Panel } = Collapse;
 const {Title} = Typography;
@@ -42,7 +49,6 @@ class BranchDetail extends React.Component {
       newState = {...newState, ...{routes: []}};
     }
 
-    console.log(props);
     this.state = newState;
   }
 
@@ -61,6 +67,8 @@ class BranchDetail extends React.Component {
       sales: null,
       employees: null,
       product_stocks: null,
+      stocks: null,
+      company: null,
       routes: []
     }
   }
@@ -68,6 +76,16 @@ class BranchDetail extends React.Component {
   componentDidMount() {
     const branchDetailUrl = `${window.location.hash.replace("#", '').replace('/details', '')}`;
     const branchUrlComponents = branchDetailUrl.split('/');
+
+    const companyUrl = branchDetailUrl.split('/branches')[0];
+    const companyId = companyUrl.split('/companies')[1];
+    if (!this.state.company) {
+      new Api(resource, {}, {url: companyUrl}).findOne()
+        .then(companyDetails => {
+          this.setState({company: companyDetails.data});
+        });
+    }
+    
     if (!this.state.branchDetails) {
       new Api(resource, {}, {url: branchDetailUrl}).findOne(branchUrlComponents[branchUrlComponents.length - 1])
         .then(branchDetails => {
@@ -77,27 +95,49 @@ class BranchDetail extends React.Component {
   }
 
   async loadData(resourceName) {
+    if (resourceName === 'purchases') {
+      resourceName = 'product_stocks';
+    }
     if (resourceName !== 'branch') {
       const url = `${window.location.hash.replace("#", '').replace('details', resourceName)}`;
       const resourceResponse = await new Api(resource, {}, {url}).index();
       const newState = {};
       newState[resourceName] = resourceResponse.data[resourceName];
+      if (resourceName === 'product_stocks') {
+        // update stock
+        const stocks = [];
+        for (let m = 0; m < resourceResponse.data[resourceName].length; m++) {
+          const row = resourceResponse.data[resourceName][m];
+          const existingStock = stocks.find(s => s.product === row.product);
+          if (existingStock) {
+            existingStock.quantity += row.quantity;
+          } else {
+            stocks.push({ product: row.product, quantity: row.quantity, sellingPrice: row.sellingPrice });
+          }
+      }
+        this.setState({ stocks });
+      }
       this.setState(newState);
     }
   }
 
   render() {
-    const {branchDetails, products, customers, sales, employees, product_stocks} = this.state;
+    const {company, branchDetails, products, customers, sales, employees, product_stocks, stocks} = this.state;
     return (
       <div>
         <Row className="title-row">
-          <Col className="gutter-row" span={6}>
-            <Title className={isMobile ? 'table-title-mobile' : 'table-title'}>
-              Branch: <b style={{color: 'black'}}>{ branchDetails ? branchDetails.name : '' }</b>
-            </Title>
-          </Col>
+          <div style={{marginLeft: '20px'}}>
+          { company ?
+            <BreadCrumbItem record={company} columns={companyColumns} resource={companyResource} resourceName='companies' />
+            : ''
+          }
+          { branchDetails ?
+            <BreadCrumbItem record={branchDetails} columns={branchColumns} resource={branchResource} resourceName='branches' />
+            : ''
+          }
+          </div>
         </Row>
-        <Divider className={'table-hr'} />
+        <Divider style={{marginTop: '20px'}} className={'table-hr'} />
         <div
           style={{
             marginLeft: '40px',
@@ -300,10 +340,17 @@ class BranchDetail extends React.Component {
               : <Spin size="large" />
             }
           </TabPane>
-          <TabPane tab="Stocks" key="product_stocks">
+          <TabPane tab="Purchases" key="purchases">
             {
               product_stocks ?
-                <GenericTable resource={productStocksResource} columns={productStocksColumns} values={product_stocks || []} />
+                <GenericTable resource={purchasesResource} columns={purchasesColumns} values={product_stocks || []} />
+                : <Spin size="large" />
+            }
+          </TabPane>
+          <TabPane tab="Stock" key="product_stocks">
+            {
+              stocks ?
+                <GenericTable resource={productStocksResource} columns={productStocksColumns} values={stocks || []} />
                 : <Spin size="large" />
             }
           </TabPane>

@@ -31,6 +31,18 @@ const columns = [
     }
   },
   {
+    title: 'Cost Price',
+    dataIndex: 'costPrice',
+    required: true,
+    isTableColumn: true,
+    render: (text) => {
+      return <i style={{ fontStyle: 'normal'}}>{!isNaN(text) ? `GHS ${text}` : ''}</i>
+    },
+    dataType: {
+      type: inputTypes.number,
+    }
+  },
+  {
     title: 'Selling Price',
     dataIndex: 'sellingPrice',
     required: true,

@@ -35,6 +35,8 @@ import allResources from "../../config/resources";
 const { Panel } = Collapse;
 
 const {Title} = Typography;
+const dateFormat = require('dateformat');
+
 
 const isMobile = window.innerWidth < 1000;
 
@@ -456,7 +458,7 @@ class GenericTable extends React.Component {
         dataIndex: 'created_at',
         isTableColumn: true,
         required: true,
-        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1).toDateString().split('GMT')[0]}</i>,
+        render: (text) => <i style={{ fontStyle: 'normal'}}>{dateFormat(Date(text), "ddd, mmm dS, yyyy, h:MM:ss TT")}</i>,
         dataType: {
           type: inputTypes.date,
         }});
@@ -468,7 +470,7 @@ class GenericTable extends React.Component {
         dataIndex: 'updated_at',
         isTableColumn: true,
         required: true,
-        render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text * 1).toDateString().split('GMT')[0]}</i>,
+        render: (text) => <i style={{ fontStyle: 'normal'}}>{dateFormat(Date(text), "ddd, mmm dS, yyyy, h:MM:ss TT")}</i>,
         dataType: {
           type: inputTypes.date,
         }});
