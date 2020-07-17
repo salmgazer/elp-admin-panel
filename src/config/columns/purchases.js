@@ -35,9 +35,8 @@ const columns = [
     dataIndex: 'costPrice',
     required: true,
     isTableColumn: true,
-    render: (text) => {
-      return <i style={{ fontStyle: 'normal'}}>{!isNaN(text) ? `GHS ${text}` : ''}</i>
-    },
+    render: (text) => <i style={{ fontStyle: 'normal'}}>{text ? `GHS ${text}` :
+        <i style={{color: 'red', fontStyle: 'normal'}}>Not Stated</i>}</i>,
     dataType: {
       type: inputTypes.number,
     }
