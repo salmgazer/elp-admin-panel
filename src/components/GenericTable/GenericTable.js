@@ -458,7 +458,7 @@ class GenericTable extends React.Component {
         dataIndex: 'created_at',
         isTableColumn: true,
         required: true,
-        render: (text) => <i style={{ fontStyle: 'normal'}}>{dateFormat(Date(text), "ddd, mmm dS, yyyy, h:MM:ss TT")}</i>,
+        render: (text) => <i style={{ fontStyle: 'normal'}}>{dateFormat(new Date(text), "ddd, mmm dS, yyyy, h:MM:ss TT")}</i>,
         dataType: {
           type: inputTypes.date,
         }});
@@ -470,7 +470,7 @@ class GenericTable extends React.Component {
         dataIndex: 'updated_at',
         isTableColumn: true,
         required: true,
-        render: (text) => <i style={{ fontStyle: 'normal'}}>{dateFormat(Date(text), "ddd, mmm dS, yyyy, h:MM:ss TT")}</i>,
+        render: (text) => <i style={{ fontStyle: 'normal'}}>{dateFormat(new Date(text), "ddd, mmm dS, yyyy, h:MM:ss TT")}</i>,
         dataType: {
           type: inputTypes.date,
         }});
