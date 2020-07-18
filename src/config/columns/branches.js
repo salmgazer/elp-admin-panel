@@ -1,5 +1,6 @@
 import inputTypes from "../inputTypes";
 import React from "react";
+import {Tag} from 'antd';
 
 const columns = [
   {
@@ -26,7 +27,8 @@ const columns = [
     dataIndex: 'startDate',
     isTableColumn: true,
     required: true,
-    render: (text) => <i style={{ fontStyle: 'normal'}}>{new Date(text).toDateString().split('GMT')[0]}</i>,
+    render: (text) => <i style={{ fontStyle: 'normal'}}>{text ? new Date(text).toDateString() : 
+      <Tag color="volcano">Not stated</Tag>}</i>,
     dataType: {
       type: inputTypes.date,
     }

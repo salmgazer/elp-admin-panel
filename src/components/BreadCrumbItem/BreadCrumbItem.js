@@ -14,7 +14,7 @@ const BreadCrumbItem = (props) => {
     const {record, resourceName, columns, path, resource} = props;
 
     return (
-        <Col key={path} span={5}>
+        <Col key={path} span={10}>
             <Collapse
                 bordered={false}
                 className={'breadcrumb'}

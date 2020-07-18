@@ -1,5 +1,6 @@
 import inputTypes from "../inputTypes";
 import React from "react";
+import {Tag} from 'antd';
 
 const columns = [
   {
@@ -36,7 +37,7 @@ const columns = [
     required: true,
     isTableColumn: true,
     render: (text) => <i style={{ fontStyle: 'normal'}}>{text ? `GHS ${text}` :
-        <i style={{color: 'red', fontStyle: 'normal'}}>Not Stated</i>}</i>,
+      <Tag color="volcano">Not stated</Tag>}</i>,
     dataType: {
       type: inputTypes.number,
     }

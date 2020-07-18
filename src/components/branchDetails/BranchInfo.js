@@ -6,7 +6,9 @@ import {
     Card,
     Tag,
     Switch
-  } from 'antd';
+} from 'antd';
+
+const dateFormat = require('dateformat');
 
 const BranchInfo = ({branchDetails}) => {
     return (
@@ -130,7 +132,7 @@ const BranchInfo = ({branchDetails}) => {
                 paddingBottom: '3px',
                 paddingTop: '3px',
                 }}>
-                {new Date(branchDetails.startDate).toDateString()}
+                {branchDetails.startDate ? dateFormat(new Date(branchDetails.startDate), "ddd, mmm dS, yyyy") : ''}
             </Tag>
             </Col>
         </Row>
@@ -157,7 +159,7 @@ const BranchInfo = ({branchDetails}) => {
                 paddingBottom: '3px',
                 paddingTop: '3px',
                 }}>
-                {new Date(branchDetails.created_at * 1000).toDateString().split('GMT')[0]}
+                {dateFormat(new Date(branchDetails.created_at), "ddd, mmm dS, yyyy, h:MM:ss TT")}
             </Tag>
             </Col>
         </Row>
@@ -172,7 +174,7 @@ const BranchInfo = ({branchDetails}) => {
                 paddingBottom: '3px',
                 paddingTop: '3px',
                 }}>
-                {new Date(branchDetails.updated_at * 1000).toDateString().split('GMT')[0]}
+                {dateFormat(new Date(branchDetails.updated_at), "ddd, mmm dS, yyyy, h:MM:ss TT")}
             </Tag>
             </Col>
         </Row>

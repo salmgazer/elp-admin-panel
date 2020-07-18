@@ -8,9 +8,9 @@ import {
   Tabs,
   Spin,
   Skeleton,
-  Card, Tag,
+  Button,
+  Modal
 } from 'antd';
-import {RightOutlined} from "@ant-design/icons";
 import pluralize from "pluralize";
 import resource from "../../config/resources/branches";
 import productsResource from "../../config/resources/products";
@@ -34,7 +34,10 @@ import Api from "../../services/Api";
 import GenericTable from "../GenericTable/GenericTable";
 import BreadCrumbItem from '../BreadCrumbItem/BreadCrumbItem';
 import BranchInfo from "./BranchInfo";
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
+
+const { confirm } = Modal;
 const { Panel } = Collapse;
 const {Title} = Typography;
 const { TabPane } = Tabs;
@@ -51,6 +54,7 @@ class BranchDetail extends React.Component {
     }
 
     this.state = newState;
+    this.resetBranchConfirm = this.resetBranchConfirm.bind(this);
   }
 
   get initialState() {
@@ -122,12 +126,30 @@ class BranchDetail extends React.Component {
     }
   }
 
+  resetBranchConfirm() {
+    confirm({
+      title:  `Are you sure you want to reset this branch (${this.state.branchDetails.name})`,
+      icon: <ExclamationCircleOutlined />,
+      content: 'This action will empty all data owned by this branch.',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      cancelType: 'primary',
+      onOk() {
+        return new Promise((resolve, reject) => {
+          setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+        }).catch(() => console.log('Oops errors!'));
+      },
+      onCancel() {},
+    });
+  }
+
   render() {
     const {company, branchDetails, products, customers, sales, employees, product_stocks, stocks} = this.state;
     return (
       <div>
-        <Row className="title-row">
-          <div style={{marginLeft: '20px'}}>
+        <Row className="title-row" style={{marginLeft: '20px'}}>
+          <Col span={12}>
           { company ?
             <BreadCrumbItem record={company} columns={companyColumns} resource={companyResource} resourceName='companies' />
             : ''
@@ -136,56 +158,21 @@ class BranchDetail extends React.Component {
             <BreadCrumbItem record={branchDetails} columns={branchColumns} resource={branchResource} resourceName='branches' />
             : ''
           }
-          </div>
+          </Col>
+          <Col span={12}>
+            <>
+              <Button onClick={this.resetBranchConfirm} style={{borderColor: 'red', color: 'red'}}>
+                Reset Branch
+              </Button>
+            </>
+          </Col>
         </Row>
         <Divider style={{marginTop: '20px'}} className={'table-hr'} />
-        <div
-          style={{
-            marginLeft: '40px',
-            marginRight: '40px'
-          }}
-        >
-            <Row gutter={2} style={{marginBottom: '30px'}}>
-              {
-                this.state.routes.map(
-                  route =>
-                    <Col key={route.path} span={5}>
-                      <Collapse
-                        bordered={false}
-                        className={'breadcrumb'}
-                      >
-                        <Panel
-                          header={route.resource.displayName}
-                          key="1"
-                          className={'breadcrumb-panel'}
-                        >
-                          {
-                            route.columns.filter(col => col.dataIndex !== route.resource.primaryKeyName || col.userBasedPrimaryKey).map(col =>
-                              <Row key={col.dataIndex} gutter={4} style={{marginBottom: '10px', marginLeft: '20px'}}>
-                                <Col span={8} style={{fontWeight: 'bolder'}}>{pluralize.singular(col.title)}</Col>
-                                <Col span={16} style={{fontWeight: 'normal'}}>{
-                                  // route.record[col.dataIndex]
-                                  col.isForeignEntity ?
-                                    route.record[col.resourceKey] ? route.record[col.resourceKey][allResources
-                                      .find(r => r.resource === col.resource).mainColumnName] : ''
-                                    : route.record[col.dataIndex]
-                                }</Col>
-                              </Row>
-                            )
-                          }
-                          <Row gutter={2}>
-                            <a href={route.path} className={'breadcrumb-link'}>
-                              Go to <RightOutlined />
-                            </a>
-                          </Row>
-                        </Panel>
-                      </Collapse>
-                    </Col>
-                )
-              }
-            </Row>
-        </div>
-        <Tabs defaultActiveKey="1" onTabClick={async(key, event) => await this.loadData(key)}>
+        <Tabs
+          defaultActiveKey="1"
+          onTabClick={async(key, event) => await this.loadData(key)}
+          style={{marginTop: "-15px"}}
+          >
           <TabPane tab="Branch Details" key="branch">
             {
               branchDetails ?

@@ -1,6 +1,6 @@
 import inputTypes from "../inputTypes";
 import React from "react";
-import { Button, Drawer, Table } from 'antd';
+import { Drawer, Table, Tag } from 'antd';
 import Component from '@reactions/component';
 import {
   InfoCircleFilled
@@ -146,7 +146,7 @@ const columns = [
     required: true,
     isTableColumn: true,
     render: (text) => <i style={{ fontStyle: 'normal'}}>{text ? `GHS ${text}` :
-      <i style={{color: 'red', fontStyle: 'normal'}}>No Discount</i>}</i>,
+      <Tag color="volcano">No discount</Tag>}</i>,
     dataType: {
       type: inputTypes.string,
     }

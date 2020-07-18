@@ -776,33 +776,37 @@ class GenericTable extends React.Component {
               />
               :
               <div className={'table-area'}>
-                <Table
-                  dataSource={this.props.values ? this.props.values : this.props[resourceName]}
-                  columns={updatedColumns.filter(col => col.isTableColumn)}
-                  rowClassName="editable-row"
-                  rowKey={resource.primaryKeyName}
-                  style={{
-                    backgroundColor: "white"
-                  }}
-                  pagination={{
-                    position: "bottom",
-                    hideOnSinglePage: true,
-                    size: 10,
-                    showQuickJumper: true,
-                    showSizeChanger: true,
-                    showLessItems: true,
-                  }}
-                  onRow={(record, rowIndex) => ({
-                      onClick: event => {}, // click row
-                      onDoubleClick: event => {
-                        this.routeOrShowRender(resource, record);
-                      }, // double click row
-                      onContextMenu: event => {}, // right button click row
-                      onMouseEnter: event => {}, // mouse enter row
-                      onMouseLeave: event => {}, // mouse leave row
-                    })}
-                  size={"small"}
-                />
+                {
+                  this.props.values || this.props[resourceName] ?
+                    <Table
+                      dataSource={this.props.values ? this.props.values : this.props[resourceName]}
+                      columns={updatedColumns.filter(col => col.isTableColumn)}
+                      rowClassName="editable-row"
+                      rowKey={resource.primaryKeyName}
+                      style={{
+                        backgroundColor: "white"
+                      }}
+                      pagination={{
+                        position: "bottom",
+                        hideOnSinglePage: true,
+                        size: 10,
+                        showQuickJumper: true,
+                        showSizeChanger: true,
+                        showLessItems: true,
+                      }}
+                      onRow={(record, rowIndex) => ({
+                          onClick: event => {}, // click row
+                          onDoubleClick: event => {
+                            this.routeOrShowRender(resource, record);
+                          }, // double click row
+                          onContextMenu: event => {}, // right button click row
+                          onMouseEnter: event => {}, // mouse enter row
+                          onMouseLeave: event => {}, // mouse leave row
+                        })}
+                      size={"small"}
+                  />
+                  : <Spin size="large"/>
+                }
               </div>
           }
         </div>
